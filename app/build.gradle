@@ -9,7 +9,6 @@ plugins {
 android {
     namespace 'com.tailorsdev.guatappe'
     compileSdk 33
-
     defaultConfig {
         applicationId "com.tailorsdev.guatappe"
         minSdk 27
@@ -59,4 +58,11 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.6.1"
+
+    //ARCore - SceneForm
+    implementation 'com.google.ar:core:1.36.0'
+    implementation "com.google.ar.sceneform.ux:sceneform-ux:1.17.1"
+    implementation "com.google.ar.sceneform:core:1.17.1"
+    implementation "com.google.ar.sceneform:animation:1.17.1"
+
 }
