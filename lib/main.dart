@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:guatappe/presentation/screens/splash_screen.dart';
+import 'config/theme/app_theme.dart';
 
 void main() => runApp(const MyApp());
 
@@ -8,15 +10,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: AppTheme().getTheme(),
       title: 'Guatappé',
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Guatappé'),
-        ),
-        body: const Center(
-          child: Text('GUIA AR'),
-        ),
-      ),
+      home: const SplashScreen(),
     );
   }
 }
