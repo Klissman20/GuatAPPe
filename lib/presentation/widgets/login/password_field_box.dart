@@ -15,7 +15,7 @@ class PasswordFieldBox extends StatelessWidget {
         borderRadius: BorderRadius.circular(20));
 
     final inputDecoration = InputDecoration(
-        hintText: 'Type your e-mail',
+        hintText: 'Password',
         hintStyle: textStyle,
         enabledBorder: outlineInputBorder,
         focusedBorder: outlineInputBorder,

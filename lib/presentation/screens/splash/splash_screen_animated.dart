@@ -2,6 +2,7 @@ import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:flutter/material.dart';
 import '../../../config/theme/app_theme.dart';
 import '../login/login_screen.dart';
+import 'package:lottie/lottie.dart';
 import 'package:page_transition/page_transition.dart';
 
 class SplashScreenAnimated extends StatelessWidget {
@@ -10,12 +11,13 @@ class SplashScreenAnimated extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AnimatedSplashScreen(
-        splash: Image.asset('assets/logo/logo_guatappe.png'),
-        nextScreen: const LoginScreen(),
-        duration: 3000,
-        backgroundColor: AppTheme.colorApp,
-        splashIconSize: 200.0,
-        splashTransition: SplashTransition.fadeTransition,
-        pageTransitionType: PageTransitionType.fade);
+      splash: Lottie.asset('assets/logo/logo_guatappe_animated.json'),
+      nextScreen: const LoginScreen(),
+      duration: 4000,
+      backgroundColor: AppTheme.colorApp,
+      splashIconSize: 300.0,
+      splashTransition: SplashTransition.fadeTransition,
+      pageTransitionType: PageTransitionType.bottomToTop,
+    );
   }
 }

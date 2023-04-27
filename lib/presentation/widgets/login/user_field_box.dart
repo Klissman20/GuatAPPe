@@ -15,7 +15,7 @@ class UserFieldBox extends StatelessWidget {
         borderRadius: BorderRadius.circular(20));
 
     final inputDecoration = InputDecoration(
-        hintText: 'Type your e-mail',
+        hintText: 'E-mail',
         hintStyle: textStyle,
         enabledBorder: outlineInputBorder,
         focusedBorder: outlineInputBorder,

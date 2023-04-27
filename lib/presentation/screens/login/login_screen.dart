@@ -63,7 +63,7 @@ class _LoginView extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(20.0),
                                 side: BorderSide(color: Colors.transparent)))),
                     child: Text(
-                      'Iniciar sesion',
+                      'Iniciar sesión',
                       style: textStyleBtn,
                     ))),
           )
