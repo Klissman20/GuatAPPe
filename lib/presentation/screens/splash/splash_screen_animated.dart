@@ -11,13 +11,9 @@ class SplashScreenAnimated extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AnimatedSplashScreen(
-      splash: Lottie.asset('assets/logo/logo_guatappe_animated.json'),
-      nextScreen: const LoginScreen(),
-      duration: 4000,
-      backgroundColor: AppTheme.colorApp,
-      splashIconSize: 300.0,
-      splashTransition: SplashTransition.fadeTransition,
-      pageTransitionType: PageTransitionType.bottomToTop,
-    );
+        splash: Lottie.asset('assets/logo/logo_animado1.json'),
+        nextScreen: const LoginScreen(),
+        backgroundColor: AppTheme.colorApp,
+        splashIconSize: 300.0);
   }
 }

@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "30362615042",
+    "project_id": "guatappe-com",
+    "storage_bucket": "guatappe-com.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:30362615042:android:30d8d051581f8ee47b961b",
+        "android_client_info": {
+          "package_name": "com.example.guatappe"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "30362615042-qsvf4af51kd36um07rrgqcgrbkscklsk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDaCPAb2VrCXcGoLj2RceqEhQrHgxNnm8o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "30362615042-qsvf4af51kd36um07rrgqcgrbkscklsk.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "30362615042-kag0pr7qkflf4ejn2t0olmmass02hiqv.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.guatappe"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -20,7 +20,6 @@ class _SplashState extends State<SplashScreenNative> {
 
   @override
   Widget build(BuildContext context) {
-    // ignore: prefer_const_constructors
     return Scaffold(
       backgroundColor: const Color.fromARGB(0xFF, 0xDB, 0x41, 0x1F),
       body: Center(

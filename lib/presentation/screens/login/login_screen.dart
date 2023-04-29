@@ -35,6 +35,7 @@ class _LoginView extends StatelessWidget {
         child: Padding(
       padding: const EdgeInsets.symmetric(horizontal: 30),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 50),
@@ -43,32 +44,48 @@ class _LoginView extends StatelessWidget {
               height: 150,
             ),
           ),
-          UserFieldBox(onValue: (value) => {}),
+          UserFieldBox(
+              onValue: (value) => {loginProvider.onLoginButton(value)}),
           const SizedBox(
             height: 20,
           ),
-          PasswordFieldBox(onValue: (value) => {}),
+          PasswordFieldBox(
+              onValue: (value) => {loginProvider.onLoginButton(value)}),
           const SizedBox(
             height: 20,
           ),
-          SizedBox(
-            height: 60,
-            width: double.infinity,
-            child: Expanded(
-                child: ElevatedButton(
-                    onPressed: () {},
-                    style: ButtonStyle(
-                        shape: MaterialStateProperty
-                            .all<RoundedRectangleBorder>(RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0),
-                                side: BorderSide(color: Colors.transparent)))),
-                    child: Text(
-                      'Iniciar sesión',
-                      style: textStyleBtn,
-                    ))),
-          )
+          LogInButton(textStyleBtn: textStyleBtn)
         ],
       ),
     ));
+  }
+}
+
+class LogInButton extends StatelessWidget {
+  const LogInButton({
+    super.key,
+    required this.textStyleBtn,
+  });
+
+  final TextStyle textStyleBtn;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 60,
+      width: double.infinity,
+      child: Expanded(
+          child: ElevatedButton(
+              onPressed: () {},
+              style: ButtonStyle(
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20.0),
+                          side: const BorderSide(color: Colors.transparent)))),
+              child: Text(
+                'Iniciar sesión',
+                style: textStyleBtn,
+              ))),
+    );
   }
 }
