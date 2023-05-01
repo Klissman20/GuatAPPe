@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:guatappe/presentation/screens/login/login_screen.dart';
 
 class SplashScreenNative extends StatefulWidget {
+  static const String name = 'splash_screen_native';
+
   const SplashScreenNative({super.key});
 
   @override

@@ -6,6 +6,7 @@ import 'package:lottie/lottie.dart';
 import 'package:page_transition/page_transition.dart';
 
 class SplashScreenAnimated extends StatelessWidget {
+  static const String name = 'splash_screen_animated';
   const SplashScreenAnimated({super.key});
 
   @override

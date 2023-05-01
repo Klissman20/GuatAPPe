@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../../../config/theme/app_theme.dart';
 import '../../providers/login_provider.dart';
 import '../../widgets/login/password_field_box.dart';
 import '../../widgets/login/user_field_box.dart';
+import '../../screens/screens.dart';
 
 class LoginScreen extends StatefulWidget {
+  static const String name = 'login_screen';
+
   const LoginScreen({super.key});
 
   @override
@@ -76,7 +80,9 @@ class LogInButton extends StatelessWidget {
       width: double.infinity,
       child: Expanded(
           child: ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                context.goNamed(MapScreen.name);
+              },
               style: ButtonStyle(
                   shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
