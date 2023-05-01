@@ -4,7 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
 
-import 'package:guatappe/firebase_options.dart';
+import 'package:guatappe/config/helpers/firebase_options.dart';
 
 class FirebaseProvider extends ChangeNotifier {
   FirebaseProvider() {
