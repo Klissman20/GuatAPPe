@@ -14,6 +14,7 @@ class SplashScreenAnimated extends StatelessWidget {
     return AnimatedSplashScreen(
         splash: Lottie.asset('assets/logo/logo_animado1.json'),
         nextScreen: const LoginScreen(),
+        nextRoute: LoginScreen.name,
         backgroundColor: AppTheme.colorApp,
         splashIconSize: 300.0);
   }
