@@ -11,37 +11,35 @@ final appRouter = GoRouter(initialLocation: '/', routes: [
     name: LoginScreen.name,
     path: '/login',
     builder: (context, state) => const LoginScreen(),
-    pageBuilder: (context, state) => _transitionPage(state),
+    pageBuilder: (context, state) => CustomTransitionPage(
+        key: state.pageKey,
+        child: const LoginScreen(),
+        transitionsBuilder: (BuildContext context, Animation<double> animation,
+            Animation<double> secondaryAnimation, Widget child) {
+          return FadeTransition(
+            opacity: animation,
+            child: child,
+          );
+        }),
   ),
   GoRoute(
       name: RegisterScreen.name,
       path: '/register',
       builder: (context, state) => const RegisterScreen()),
   GoRoute(
-      name: VideoScreen.name,
-      path: '/video',
-      builder: (context, state) => const VideoScreen(),
-      pageBuilder: (context, state) => _transitionPage(state),
-  ),
-  
-  GoRoute(
     name: MapScreen.name,
     path: '/map',
     builder: (context, state) => const MapScreen(),
-    pageBuilder: (context, state) => _transitionPage(state),
+    pageBuilder: (context, state) => CustomTransitionPage(
+        key: state.pageKey,
+        child: const MapScreen(),
+        transitionsBuilder: (BuildContext context, Animation<double> animation,
+            Animation<double> secondaryAnimation, Widget child) {
+          return FadeTransition(
+            opacity: animation,
+            child: child,
+          );
+        }),
+    //pageBuilder: (context, state) => _transitionPage(state),
   ),
 ]);
-
-
-CustomTransitionPage<dynamic> _transitionPage(GoRouterState state) {
-  return CustomTransitionPage(
-      key: state.pageKey,
-      child: const LoginScreen(),
-      transitionsBuilder: (BuildContext context, Animation<double> animation,
-          Animation<double> secondaryAnimation, Widget child) {
-        return FadeTransition(
-          opacity: animation,
-          child: child,
-        );
-      });
-}

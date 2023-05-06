@@ -13,34 +13,23 @@ class MapScreen extends StatefulWidget {
 }
 
 class _MapScreenState extends State<MapScreen> {
-  final LatLng _center1 = const LatLng(6.233, -75.158);
+  LatLng center1 = const LatLng(6.233, -75.158);
   late GoogleMapController mapController;
   String googleAPiKey = "AIzaSyCjWxZLRim7FfOWIcDm4h83vOqJHe8rNVw";
   late PolylinePoints polylinePoints = PolylinePoints();
   List<LatLng> polylineCoordinates = [];
   Map<PolylineId, Polyline> polylines = {};
-  late BuildContext _context;
   Map<MarkerId, Marker> markers = {};
 
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    context;
-  }
-
-  void onMapCreated(GoogleMapController controller) async {
+  void onMapCreated(
+      GoogleMapController controller, BuildContext context_) async {
     mapController = controller;
     markers = {
       const MarkerId('value'): Marker(
           markerId: const MarkerId("uno"),
           position: const LatLng(6.234673108822359, -75.16320162604464),
           onTap: () {
-            _context.goNamed(LoginScreen.name);
+            context_.goNamed(LoginScreen.name);
           }),
       const MarkerId("dos"): const Marker(
           markerId: MarkerId("value"),
@@ -48,42 +37,7 @@ class _MapScreenState extends State<MapScreen> {
     };
   }
 
-  @override
-  Widget build(BuildContext context) {
-    _context = context;
-    return Scaffold(
-      appBar: AppBar(
-          title: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          const Text("Mapa"),
-          TextButton(
-              onPressed: () {
-                setState(() {
-                  polylines = {};
-                  polylineCoordinates = [];
-                });
-                _getPolyline();
-              },
-              style: const ButtonStyle(
-                  backgroundColor: MaterialStatePropertyAll(Colors.amber)),
-              child: const Text("Trazar Ruta"))
-        ],
-      )),
-      body: GoogleMap(
-          onMapCreated: onMapCreated,
-          myLocationButtonEnabled: true,
-          myLocationEnabled: true,
-          mapToolbarEnabled: false,
-          compassEnabled: true,
-          markers: Set.of(markers.values),
-          initialCameraPosition:
-              CameraPosition(target: _center1, zoom: 15.5, tilt: 50.0),
-          polylines: Set<Polyline>.of(polylines.values)),
-    );
-  }
-
-  _getPolyline() async {
+  getPolyline() async {
     PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
         googleAPiKey,
         const PointLatLng(6.234673108822359, -75.16320162604464),
@@ -108,5 +62,40 @@ class _MapScreenState extends State<MapScreen> {
     mapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
         zoom: 15.5, target: polylineCoordinates[result.points.length ~/ 2])));
     setState(() {});
+  }
+
+  @override
+  void dispose() {
+    
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        body: Stack(
+      children: [
+        GoogleMap(
+            onMapCreated: (controller) {
+              onMapCreated(controller, context);
+            },
+            myLocationButtonEnabled: true,
+            myLocationEnabled: true,
+            mapToolbarEnabled: false,
+            compassEnabled: true,
+            markers: Set.of(markers.values),
+            initialCameraPosition:
+                CameraPosition(target: center1, zoom: 15.5, tilt: 50.0),
+            polylines: Set<Polyline>.of(polylines.values)),
+        Positioned(
+            right: 30,
+            top: 50,
+            child: FilledButton(
+                onPressed: () {
+                  getPolyline();
+                },
+                child: Text('Show Route')))
+      ],
+    ));
   }
 }
