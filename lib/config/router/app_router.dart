@@ -24,6 +24,6 @@ final appRouter = GoRouter(initialLocation: '/', routes: [
   ),
   GoRoute(
       name: PopupScreen.name,
-      path: '/register',
+      path: '/popup',
       builder: (context, state) => const PopupScreen()),
 ]);
