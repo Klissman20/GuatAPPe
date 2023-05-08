@@ -22,4 +22,8 @@ final appRouter = GoRouter(initialLocation: '/', routes: [
     builder: (context, state) => const MapScreen(),
     //pageBuilder: (context, state) => _transitionPage(state),
   ),
+  GoRoute(
+      name: PopupScreen.name,
+      path: '/register',
+      builder: (context, state) => const PopupScreen()),
 ]);
