@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:guatappe/presentation/providers/login_provider.dart';
 import 'package:provider/provider.dart';
 import 'config/theme/app_theme.dart';
-import 'infrastructure/providers/firebase_provider.dart';
 import 'config/router/app_router.dart';
 
 void main() => runApp(const MyApp());
@@ -15,7 +14,6 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => LoginProvider()),
-        ChangeNotifierProvider(create: (_) => FirebaseProvider())
       ],
       child: MaterialApp.router(
         routerConfig: appRouter,

@@ -78,20 +78,19 @@ class LogInButton extends StatelessWidget {
     return SizedBox(
       height: 60,
       width: double.infinity,
-      child: Expanded(
-          child: ElevatedButton(
-              onPressed: () {
-                context.goNamed(MapScreen.name);
-              },
-              style: ButtonStyle(
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20.0),
-                          side: const BorderSide(color: Colors.transparent)))),
-              child: Text(
-                'Iniciar sesión',
-                style: textStyleBtn,
-              ))),
+      child: ElevatedButton(
+          onPressed: () {
+            context.goNamed(MapScreen.name);
+          },
+          style: ButtonStyle(
+              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                      side: const BorderSide(color: Colors.transparent)))),
+          child: Text(
+            'Iniciar sesión',
+            style: textStyleBtn,
+          )),
     );
   }
 }
