@@ -49,7 +49,7 @@ class _MapScreenState extends State<MapScreen> {
             title: "Marcador:$i",
             snippet: "Snippet",
             onTap: () {
-              context.goNamed(LoginScreen.name);
+              context.goNamed(PopupScreen.name);
             },
           ),
           icon: pinLocationIcon));
