@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:go_router/go_router.dart';
-import 'package:guatappe/presentation/screens/screens.dart';
 
 List<LatLng> referenceLatLng = [
   const LatLng(6.2207260149012455, -75.17947304698288),

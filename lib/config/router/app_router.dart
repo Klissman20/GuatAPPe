@@ -8,22 +8,33 @@ final appRouter = GoRouter(initialLocation: '/', routes: [
       path: '/',
       builder: (context, state) => const SplashScreenAnimated()),
   GoRoute(
-    name: LoginScreen.name,
-    path: '/login',
-    builder: (context, state) => const LoginScreen(),
-  ),
+      name: LoginScreen.name,
+      path: '/login',
+      pageBuilder: (context, state) =>
+          transitionPage(state, const LoginScreen())),
   GoRoute(
       name: RegisterScreen.name,
       path: '/register',
-      builder: (context, state) => const RegisterScreen()),
+      pageBuilder: (context, state) =>
+          transitionPage(state, const RegisterScreen())),
   GoRoute(
-    name: MapScreen.name,
-    path: '/map',
-    builder: (context, state) => const MapScreen(),
-    //pageBuilder: (context, state) => _transitionPage(state),
-  ),
+      name: MapScreen.name,
+      path: '/map',
+      pageBuilder: (context, state) =>
+          transitionPage(state, const MapScreen())),
   GoRoute(
-      name: PopupScreen.name,
-      path: '/popup',
-      builder: (context, state) => const PopupScreen()),
+      name: DetailsScreen.name,
+      path: '/details',
+      pageBuilder: (context, state) =>
+          transitionPage(state, const DetailsScreen()))
 ]);
+
+CustomTransitionPage<MaterialPage> transitionPage(
+    GoRouterState state, Widget screen) {
+  return CustomTransitionPage(
+      key: state.pageKey,
+      transitionDuration: const Duration(milliseconds: 200),
+      child: screen,
+      transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+          FadeTransition(opacity: animation, child: child));
+}

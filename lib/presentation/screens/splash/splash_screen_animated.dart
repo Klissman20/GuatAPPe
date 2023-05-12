@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../../../config/theme/app_theme.dart';
 import '../login/login_screen.dart';
 import 'package:lottie/lottie.dart';
-import 'package:page_transition/page_transition.dart';
 
 class SplashScreenAnimated extends StatelessWidget {
   static const String name = 'splash_screen_animated';
@@ -14,6 +13,7 @@ class SplashScreenAnimated extends StatelessWidget {
     return AnimatedSplashScreen(
         splash: Lottie.asset('assets/logo/logo_animado1.json'),
         nextScreen: const LoginScreen(),
+        splashTransition: SplashTransition.scaleTransition,
         nextRoute: LoginScreen.name,
         backgroundColor: AppTheme.colorApp,
         splashIconSize: 300.0);
