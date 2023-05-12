@@ -28,7 +28,7 @@ class _MapScreenState extends State<MapScreen> {
 
   void setCustomMapPin() async {
     pinLocationIcon = await BitmapDescriptor.fromAssetImage(
-        const ImageConfiguration(devicePixelRatio: 1.2, size: Size(30, 30)),
+        const ImageConfiguration(devicePixelRatio: 0.5, size: Size(30, 30)),
         'assets/icono.png');
   }
 
