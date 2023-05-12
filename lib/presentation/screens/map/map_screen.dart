@@ -28,7 +28,8 @@ class _MapScreenState extends State<MapScreen> {
 
   void setCustomMapPin() async {
     pinLocationIcon = await BitmapDescriptor.fromAssetImage(
-        const ImageConfiguration(devicePixelRatio: 2), 'assets/icono.png');
+        const ImageConfiguration(devicePixelRatio: 1.2, size: Size(30, 30)),
+        'assets/icono.png');
   }
 
   @override
@@ -101,21 +102,23 @@ class _MapScreenState extends State<MapScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          GoogleMap(
-              onMapCreated: (controller) {
-                onMapCreated(controller, context);
-              },
-              myLocationButtonEnabled: true,
-              myLocationEnabled: true,
-              mapToolbarEnabled: false,
-              compassEnabled: true,
-              markers: _markers,
-              initialCameraPosition:
-                  CameraPosition(target: center1, zoom: 15.5, tilt: 50.0),
-              polylines: Set<Polyline>.of(polylines.values))
-        ],
+      body: SafeArea(
+        child: Stack(
+          children: [
+            GoogleMap(
+                onMapCreated: (controller) {
+                  onMapCreated(controller, context);
+                },
+                myLocationButtonEnabled: true,
+                myLocationEnabled: true,
+                mapToolbarEnabled: false,
+                compassEnabled: true,
+                markers: _markers,
+                initialCameraPosition:
+                    CameraPosition(target: center1, zoom: 15.5, tilt: 50.0),
+                polylines: Set<Polyline>.of(polylines.values))
+          ],
+        ),
       ),
     );
   }
