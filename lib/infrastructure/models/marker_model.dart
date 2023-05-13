@@ -28,18 +28,15 @@ List<LatLng> referenceLatLng = [
   const LatLng(6.231356424733816, -75.15328502323882)
 ];
 
-
-
 class MarkerModel {
   String name;
   String description;
-  Image? image;
+  Image image;
   LatLng position;
 
-  MarkerModel({
-    required this.name,
-    required this.description,
-    required this.position,
-  }) : image = Image.asset("assets/images/plazoleta.png");
-
+  MarkerModel(
+      {required this.name,
+      required this.description,
+      required this.position,
+      required this.image});
 }

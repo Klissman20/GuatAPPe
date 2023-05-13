@@ -10,37 +10,52 @@ import 'package:guatappe/presentation/screens/screens.dart';
 
 List<MarkerModel> markers = [
   MarkerModel(
-      name: 'Punto1',
-      description: 'description1',
-      position: const LatLng(6.23447240858383, -75.16138952194993)),
+    name: 'Punto1',
+    description: 'description1',
+    position: const LatLng(6.23447240858383, -75.16138952194993),
+    image: Image.asset("assets/images/plazoleta.png"),
+  ),
   MarkerModel(
       name: 'Punto2',
       description: 'description2',
-      position: const LatLng(6.232221605334246, -75.15707683829378)),
+      position: const LatLng(6.232221605334246, -75.15707683829378),
+      image: Image.asset("assets/images/plazoleta.png")),
   MarkerModel(
-      name: 'Punto3',
-      description: 'description3',
-      position: const LatLng(6.233093330814248, -75.15692414269232)),
+    name: 'Punto3',
+    description: 'description3',
+    position: const LatLng(6.233093330814248, -75.15692414269232),
+    image: Image.asset("assets/images/plazoleta.png"),
+  ),
   MarkerModel(
-      name: 'Punto4',
-      description: 'description4',
-      position: const LatLng(6.235386582227664, -75.16274920989979)),
+    name: 'Punto4',
+    description: 'description4',
+    position: const LatLng(6.235386582227664, -75.16274920989979),
+    image: Image.asset("assets/images/plazoleta.png"),
+  ),
   MarkerModel(
-      name: 'Punto5',
-      description: 'description5',
-      position: const LatLng(6.2350918057533615, -75.16190866815133)),
+    name: 'Punto5',
+    description: 'description5',
+    position: const LatLng(6.2350918057533615, -75.16190866815133),
+    image: Image.asset("assets/images/plazoleta.png"),
+  ),
   MarkerModel(
-      name: 'Punto6',
-      description: 'description6',
-      position: const LatLng(6.234777081816057, -75.16134013193083)),
+    name: 'Punto6',
+    description: 'description6',
+    position: const LatLng(6.234777081816057, -75.16134013193083),
+    image: Image.asset("assets/images/plazoleta.png"),
+  ),
   MarkerModel(
-      name: 'Punto7',
-      description: 'description7',
-      position: const LatLng(6.234259319683774, -75.16189149626756)),
+    name: 'Punto7',
+    description: 'description7',
+    position: const LatLng(6.234259319683774, -75.16189149626756),
+    image: Image.asset("assets/images/plazoleta.png"),
+  ),
   MarkerModel(
-      name: 'Punto8',
-      description: 'description8',
-      position: const LatLng(6.234133893898507, -75.16138409520177)),
+    name: 'Punto8',
+    description: 'description8',
+    position: const LatLng(6.234133893898507, -75.16138409520177),
+    image: Image.asset("assets/images/plazoleta.png"),
+  ),
 ];
 
 class MapScreen extends StatefulWidget {
@@ -82,7 +97,7 @@ class MapScreenState extends State<MapScreen> {
           position: marker.position,
           //infoWindow: InfoWindow(title: marker.name, snippet: 'Ver mas'),
           onTap: () {
-            _showMyDialogMarker(markers[0], context_);
+            _showMyDialogMarker(marker, context_);
           },
           icon: pinLocationIcon));
       setState(() {});
@@ -111,7 +126,7 @@ class MapScreenState extends State<MapScreen> {
             TextButton(
               child: const Text('Ver más'),
               onPressed: () {
-                context_.pushNamed(DetailsScreen.name);
+                context_.pushNamed(DetailsScreen.name, extra: marker);
               },
             ),
           ],
