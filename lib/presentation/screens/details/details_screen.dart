@@ -27,7 +27,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
         leading: BackButton(
           color: Colors.deepOrange,
           onPressed: () {
-            context.goNamed('map_screen');
+            context.pop();
           },
         ),
       ),

@@ -25,22 +25,21 @@ List<LatLng> referenceLatLng = [
   const LatLng(6.233093330814248, -75.15692414269232),
   const LatLng(6.234454448410652, -75.15721275695284),
   const LatLng(6.232221605334246, -75.15707683829378),
-  const LatLng(6.231356424733816, -75.15328502323882),
+  const LatLng(6.231356424733816, -75.15328502323882)
 ];
 
-class Markers {
+
+
+class MarkerModel {
   String name;
   String description;
-  Image photo = Image.asset("name");
-  Marker marker;
+  Image? image;
+  LatLng position;
 
-  Markers(
-      {required this.name, required this.description, required this.marker});
+  MarkerModel({
+    required this.name,
+    required this.description,
+    required this.position,
+  }) : image = Image.asset("assets/images/plazoleta.png");
 
-  //Set<Marker> getMarker() {
-  //  for (var latlng in referenceLatLng) {
-  //    markers.add(Marker(markerId: id, position: latlng));
-  //  }
-  //  return markers;
-  // }
 }

@@ -1,70 +1,123 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
-import 'package:go_router/go_router.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:guatappe/infrastructure/models/marker_model.dart';
+import 'package:go_router/go_router.dart';
+import 'package:guatappe/presentation/screens/screens.dart';
+
+List<MarkerModel> markers = [
+  MarkerModel(
+      name: 'Punto1',
+      description: 'description1',
+      position: const LatLng(6.23447240858383, -75.16138952194993)),
+  MarkerModel(
+      name: 'Punto2',
+      description: 'description2',
+      position: const LatLng(6.232221605334246, -75.15707683829378)),
+  MarkerModel(
+      name: 'Punto3',
+      description: 'description3',
+      position: const LatLng(6.233093330814248, -75.15692414269232)),
+  MarkerModel(
+      name: 'Punto4',
+      description: 'description4',
+      position: const LatLng(6.235386582227664, -75.16274920989979)),
+  MarkerModel(
+      name: 'Punto5',
+      description: 'description5',
+      position: const LatLng(6.2350918057533615, -75.16190866815133)),
+  MarkerModel(
+      name: 'Punto6',
+      description: 'description6',
+      position: const LatLng(6.234777081816057, -75.16134013193083)),
+  MarkerModel(
+      name: 'Punto7',
+      description: 'description7',
+      position: const LatLng(6.234259319683774, -75.16189149626756)),
+  MarkerModel(
+      name: 'Punto8',
+      description: 'description8',
+      position: const LatLng(6.234133893898507, -75.16138409520177)),
+];
 
 class MapScreen extends StatefulWidget {
   static const String name = 'map_screen';
   const MapScreen({super.key});
 
   @override
-  State<MapScreen> createState() => _MapScreenState();
+  State<MapScreen> createState() => MapScreenState();
 }
 
-class _MapScreenState extends State<MapScreen> {
+class MapScreenState extends State<MapScreen> {
+  late String mapStyle;
+  late BitmapDescriptor pinLocationIcon;
   LatLng center1 = const LatLng(6.233, -75.158);
   late GoogleMapController mapController;
+  final Set<Marker> _markers = {};
   String googleAPiKey = "AIzaSyCjWxZLRim7FfOWIcDm4h83vOqJHe8rNVw";
   late PolylinePoints polylinePoints = PolylinePoints();
   List<LatLng> polylineCoordinates = [];
   Map<PolylineId, Polyline> polylines = {};
-  late BitmapDescriptor pinLocationIcon;
-  late String _mapStyle;
-
-  final Set<Marker> _markers = {};
-  final List<Markers> _markerModels = [];
 
   void setCustomMapPin() async {
-    pinLocationIcon = await BitmapDescriptor.fromAssetImage(
-        const ImageConfiguration(devicePixelRatio: 0.5, size: Size(30, 30)),
-        'assets/icono.png');
+    if (Platform.isIOS) {
+      pinLocationIcon = await BitmapDescriptor.fromAssetImage(
+          const ImageConfiguration(), 'assets/logo/icono_40x40.png');
+    } else if (Platform.isAndroid) {
+      pinLocationIcon = await BitmapDescriptor.fromAssetImage(
+          const ImageConfiguration(), 'assets/logo/icono_150x150.png');
+    }
   }
 
-  @override
-  void initState() {
-    rootBundle.loadString('assets/map_style.json').then((string) {
-      _mapStyle = string;
-    });
-    setCustomMapPin();
-    super.initState();
-  }
-
-  void onMapCreated(
+  Future<void> onMapCreated(
       GoogleMapController controller, BuildContext context_) async {
     mapController = controller;
-    for (var i = 0; i < referenceLatLng.length; i++) {
+    mapController.setMapStyle(mapStyle);
+    for (final marker in markers) {
       _markers.add(Marker(
-          markerId: MarkerId('id-$i'),
-          position: referenceLatLng[i],
-          infoWindow: InfoWindow(
-            title: "Punto: $i",
-            snippet: "Ver más Info",
-            onTap: () {
-              context.goNamed('details_screen');
-            },
-          ),
+          markerId: MarkerId(marker.name),
+          position: marker.position,
+          //infoWindow: InfoWindow(title: marker.name, snippet: 'Ver mas'),
+          onTap: () {
+            _showMyDialogMarker(markers[0], context_);
+          },
           icon: pinLocationIcon));
-      _markerModels.add(Markers(
-          name: 'name',
-          description: 'description',
-          marker: _markers.elementAt(i)));
+      setState(() {});
     }
-    mapController.setMapStyle(_mapStyle);
-    setState(() {});
+  }
 
-    //mapController.animateCamera(CameraUpdate.newCameraPosition(cameraPosition))
+  Future<void> _showMyDialogMarker(
+      MarkerModel marker, BuildContext context_) async {
+    return showDialog<void>(
+      context: context_,
+      barrierDismissible: true, // user must tap button!
+      builder: (context_) {
+        return AlertDialog(
+          title: Text(marker.name),
+          content: SingleChildScrollView(
+            child: Text(marker.description),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Como llegar'),
+              onPressed: () {
+                getPolyline();
+                Navigator.pop(context_);
+              },
+            ),
+            TextButton(
+              child: const Text('Ver más'),
+              onPressed: () {
+                context_.pushNamed(DetailsScreen.name);
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   getPolyline() async {
@@ -95,130 +148,26 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   @override
-  void dispose() {
-    super.dispose();
+  void initState() {
+    rootBundle.loadString('assets/map_style.json').then((string) {
+      mapStyle = string;
+    });
+    setCustomMapPin();
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Stack(
-          children: [
-            GoogleMap(
-                onMapCreated: (controller) {
-                  onMapCreated(controller, context);
-                },
-                myLocationButtonEnabled: true,
-                myLocationEnabled: true,
-                mapToolbarEnabled: false,
-                compassEnabled: true,
-                markers: _markers,
-                initialCameraPosition:
-                    CameraPosition(target: center1, zoom: 15.5, tilt: 50.0),
-                polylines: Set<Polyline>.of(polylines.values))
-          ],
-        ),
-      ),
+          child: GoogleMap(
+        onMapCreated: (controller) {
+          onMapCreated(controller, context);
+        },
+        markers: _markers,
+        initialCameraPosition:
+            CameraPosition(target: center1, zoom: 15.5, tilt: 50.0),
+      )),
     );
   }
 }
-/*   final List list = ['One', 'Two', 'Three', 'Four'];
-
-  Future<void> _showInfoDialog() async { 
-    return showGeneralDialog<void>(
-      context: context,
-      transitionBuilder: (context, a1, a2, child) {
-        var curve = Curves.easeInOut.transform(a1.value);
-        return Transform.scale(
-          scale: curve,
-          child: AlertDialog(
-            insetPadding:
-                const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-            shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(2))),
-            title: Stack(children: [
-              Image.asset("assets/images/plazoleta.png"),
-              Positioned(
-                left: 5.0,
-                top: 210.0,
-                child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                  decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(5)),
-                      color: Color.fromRGBO(0, 0, 0, 0.6)),
-                  child: const Text(
-                    textAlign: TextAlign.start,
-                    'Plazoleta del Zócalo',
-                    style: TextStyle(
-                        fontSize: 28,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
-              Positioned(
-                  right: 0,
-                  child: IconButton(
-                    style: const ButtonStyle(
-                        elevation: MaterialStatePropertyAll(15),
-                        backgroundColor: MaterialStatePropertyAll(
-                            Color.fromRGBO(0, 0, 0, 0.6))),
-                    iconSize: 22.0,
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    icon: const Icon(Icons.close),
-                    color: Colors.white,
-                  ))
-            ]),
-            titlePadding: const EdgeInsets.all(2.0),
-            content: const SingleChildScrollView(
-              clipBehavior: Clip.antiAliasWithSaveLayer,
-              child: InfoPopup(),
-            ),
-            contentPadding:
-                const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-            actions: [
-              ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor:
-                          const Color.fromARGB(0xFF, 0xDB, 0x41, 0x1F),
-                      shape: const BeveledRectangleBorder(
-                          borderRadius:
-                              BorderRadius.all(Radius.circular(2)))),
-                  onPressed: () {
-                    getPolyline();
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text('Como llegar',
-                      style: TextStyle(color: Colors.white))),
-              ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor:
-                          const Color.fromARGB(0xFF, 0xDB, 0x41, 0x1F),
-                      shape: const BeveledRectangleBorder(
-                          borderRadius:
-                              BorderRadius.all(Radius.circular(2.5)))),
-                  onPressed: () {
-                    context.goNamed('register_screen');
-                  },
-                  child: const Text(
-                    'Activar AR',
-                    style: TextStyle(color: Colors.white),
-                  )),
-            ],
-            actionsAlignment: MainAxisAlignment.spaceAround,
-            actionsPadding: const EdgeInsets.only(bottom: 10, top: 0),
-          ),
-        );
-      },
-      transitionDuration: const Duration(milliseconds: 300),
-      pageBuilder: (context, a1, a2) {
-        return Container();
-      },
-    );
-  }
-}
-*/
