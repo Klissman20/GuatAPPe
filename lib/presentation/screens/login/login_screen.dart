@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 import '../../../config/theme/app_theme.dart';
-import '../../providers/login_provider.dart';
 import '../../widgets/login/password_field_box.dart';
 import '../../widgets/login/user_field_box.dart';
 import '../../screens/screens.dart';
@@ -30,8 +28,6 @@ class _LoginScreenState extends State<LoginScreen> {
 class _LoginView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final loginProvider = context.watch<LoginProvider>();
-
     final TextStyle textStyleBtn = TextStyle(
         color: AppTheme.colorApp, fontSize: 24, fontWeight: FontWeight.bold);
 
@@ -48,13 +44,11 @@ class _LoginView extends StatelessWidget {
               height: 150,
             ),
           ),
-          UserFieldBox(
-              onValue: (value) => {loginProvider.onLoginButton(value)}),
+          UserFieldBox(onValue: (value) => {}),
           const SizedBox(
             height: 20,
           ),
-          PasswordFieldBox(
-              onValue: (value) => {loginProvider.onLoginButton(value)}),
+          PasswordFieldBox(onValue: (value) => {}),
           const SizedBox(
             height: 20,
           ),

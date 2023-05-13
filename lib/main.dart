@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:guatappe/presentation/providers/login_provider.dart';
-import 'package:provider/provider.dart';
 import 'config/theme/app_theme.dart';
 import 'config/router/app_router.dart';
 
@@ -11,16 +9,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => LoginProvider()),
-      ],
-      child: MaterialApp.router(
-        routerConfig: appRouter,
-        debugShowCheckedModeBanner: false,
-        theme: AppTheme().getTheme(),
-        title: 'Guatappé',
-      ),
+    return MaterialApp.router(
+      routerConfig: appRouter,
+      debugShowCheckedModeBanner: false,
+      theme: AppTheme().getTheme(),
+      title: 'Guatappé',
     );
   }
 }
