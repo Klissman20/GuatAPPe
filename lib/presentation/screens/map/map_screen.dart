@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:guatappe/config/constants/environment.dart';
 import 'package:guatappe/infrastructure/models/marker_model.dart';
 import 'package:go_router/go_router.dart';
 import 'package:guatappe/presentation/screens/screens.dart';
@@ -171,7 +172,9 @@ class MapScreenState extends State<MapScreen> {
   LatLng center1 = const LatLng(6.233, -75.158);
   late GoogleMapController mapController;
   final Set<Marker> _markers = {};
-  String googleAPiKey = "AIzaSyCjWxZLRim7FfOWIcDm4h83vOqJHe8rNVw";
+
+  String googleAPiKey = Environment.google_api_key;
+
   late PolylinePoints polylinePoints = PolylinePoints();
   List<LatLng> polylineCoordinates = [];
   Map<PolylineId, Polyline> polylines = {};
