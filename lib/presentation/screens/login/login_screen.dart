@@ -29,7 +29,7 @@ class _LoginView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final TextStyle textStyleBtn = TextStyle(
-        color: AppTheme.colorApp, fontSize: 24, fontWeight: FontWeight.bold);
+        color: AppTheme.colorApp, fontSize: 22, fontWeight: FontWeight.bold);
 
     return SafeArea(
         child: Padding(

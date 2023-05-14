@@ -13,13 +13,6 @@ class DetailsScreen extends StatefulWidget {
 }
 
 class _DetailsScreenState extends State<DetailsScreen> {
-  int _selectedIndex = 0;
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +29,51 @@ class _DetailsScreenState extends State<DetailsScreen> {
       body: SingleChildScrollView(
           child: Column(
         children: [
-          widget.marker.image,
+          Container(
+              width: double.infinity,
+              child: widget.marker.image),
+          Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Text(
+              '${widget.marker.description}',
+              style: TextStyle(fontSize: 16),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Text(
+              '${widget.marker.description}',
+              style: TextStyle(fontSize: 16),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Text(
+              '${widget.marker.description}',
+              style: TextStyle(fontSize: 16),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Text(
+              '${widget.marker.description}',
+              style: TextStyle(fontSize: 16),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Text(
+              '${widget.marker.description}',
+              style: TextStyle(fontSize: 16),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Text(
+              '${widget.marker.description}',
+              style: TextStyle(fontSize: 16),
+            ),
+          ),
           Padding(
             padding: const EdgeInsets.all(15.0),
             child: Text(
@@ -47,8 +84,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
         ],
       )),
 
-      //TODO: Cambiar navigation por boton solo AR
-      bottomNavigationBar: BottomNavigationBar(
+      /* bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.deepOrange,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
@@ -63,7 +99,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
         selectedItemColor: Colors.white,
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
-      ),
+      ), */
     );
   }
 }

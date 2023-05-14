@@ -8,54 +8,152 @@ import 'package:guatappe/infrastructure/models/marker_model.dart';
 import 'package:go_router/go_router.dart';
 import 'package:guatappe/presentation/screens/screens.dart';
 
+final String lorem = 'Est in sunt adipisicing elit ipsum cillum et ea ullamco voluptate qui incididunt aute commodo. Deserunt excepteur commodo magna et id consequat sit nostrud. Officia ut cillum veniam est est quis aliquip adipisicing exercitation in.';
 List<MarkerModel> markers = [
   MarkerModel(
-    name: 'Punto1',
-    description: 'description1',
-    position: const LatLng(6.23447240858383, -75.16138952194993),
+    description: lorem,
     image: Image.asset("assets/images/plazoleta.png"),
+    name: 'La Piedra',
+    position: const LatLng(6.2207260149012455, -75.17947304698288),
   ),
   MarkerModel(
-      name: 'Punto2',
-      description: 'description2',
-      position: const LatLng(6.232221605334246, -75.15707683829378),
-      image: Image.asset("assets/images/plazoleta.png")),
-  MarkerModel(
-    name: 'Punto3',
-    description: 'description3',
-    position: const LatLng(6.233093330814248, -75.15692414269232),
+    description: lorem,
     image: Image.asset("assets/images/plazoleta.png"),
+    name: 'Comfama',
+    position: const LatLng(6.229598621338858, -75.1787076388338),
   ),
   MarkerModel(
-    name: 'Punto4',
-    description: 'description4',
+    description: lorem,
+    image: Image.asset("assets/images/plazoleta.png"),
+    name: 'Bicentenario',
+    position: const LatLng(6.23265236289733, -75.16662940513794),
+  ),
+  MarkerModel(
+    description: lorem,
+    image: Image.asset("assets/images/plazoleta.png"),
+    name: 'Plazoleta del Zócalero',
     position: const LatLng(6.235386582227664, -75.16274920989979),
-    image: Image.asset("assets/images/plazoleta.png"),
   ),
   MarkerModel(
-    name: 'Punto5',
-    description: 'description5',
+    description: lorem,
+    image: Image.asset("assets/images/plazoleta.png"),
+    name: 'Comando',
+    position: const LatLng(6.235236977647446, -75.1623255947003),
+  ),
+  MarkerModel(
+    description: lorem,
+    image: Image.asset("assets/images/plazoleta.png"),
+    name: 'Cordero',
     position: const LatLng(6.2350918057533615, -75.16190866815133),
-    image: Image.asset("assets/images/plazoleta.png"),
   ),
   MarkerModel(
-    name: 'Punto6',
-    description: 'description6',
+    description: lorem,
+    image: Image.asset("assets/images/plazoleta.png"),
+    name: 'Terminal de Transporte',
     position: const LatLng(6.234777081816057, -75.16134013193083),
-    image: Image.asset("assets/images/plazoleta.png"),
   ),
   MarkerModel(
-    name: 'Punto7',
-    description: 'description7',
+    description: lorem,
+    image: Image.asset("assets/images/plazoleta.png"),
+    name: 'Malecón',
+    position: const LatLng(6.235541727677295, -75.16168794231076),
+  ),
+  MarkerModel(
+    description: lorem,
+    image: Image.asset("assets/images/plazoleta.png"),
+    name: 'Memoria de puertas, ventanas y bocallaves',
+    position: const LatLng(6.235086264840695, -75.16137580478286),
+  ),
+  MarkerModel(
+    description: lorem,
+    image: Image.asset("assets/images/plazoleta.png"),
+    name: 'Casa del Arriero',
+    position: const LatLng(6.234312583116759, -75.15966299669682),
+  ),
+  MarkerModel(
+    description: lorem,
+    image: Image.asset("assets/images/plazoleta.png"),
+    name: 'Calle del Recuerdo',
+    position: const LatLng(6.23343118128229, -75.16078372149775),
+  ),
+  MarkerModel(
+    description: lorem,
+    image: Image.asset("assets/images/plazoleta.png"),
+    name: 'Calle Jiménez',
+    position: const LatLng(6.2327577833006, -75.16103285510259),
+  ),
+  MarkerModel(
+    description: lorem,
+    image: Image.asset("assets/images/plazoleta.png"),
+    name: 'Callejón Julia Pastusa',
+    position: const LatLng(6.2325869733987895, -75.16154961107048),
+  ),
+  MarkerModel(
+    description: lorem,
+    image: Image.asset("assets/images/plazoleta.png"),
+    name: 'Mural Enriquetica - Bernardo Arcila',
+    position: const LatLng(6.233056309831474, -75.16168663649425),
+  ),
+  MarkerModel(
+    description: lorem,
+    image: Image.asset("assets/images/plazoleta.png"),
+    name: 'Zócalo Banda de los Zuluaga',
+    position: const LatLng(6.23329097788889, -75.16162422887523),
+  ),
+  MarkerModel(
+    description: lorem,
+    image: Image.asset("assets/images/plazoleta.png"),
+    name: 'Parque Principal',
     position: const LatLng(6.234259319683774, -75.16189149626756),
-    image: Image.asset("assets/images/plazoleta.png"),
   ),
   MarkerModel(
-    name: 'Punto8',
-    description: 'description8',
-    position: const LatLng(6.234133893898507, -75.16138409520177),
+    description: lorem,
     image: Image.asset("assets/images/plazoleta.png"),
+    name: 'Iglesia y Casa Cural',
+    position: const LatLng(6.234133893898507, -75.16138409520177),
   ),
+  MarkerModel(
+    description: lorem,
+    image: Image.asset("assets/images/plazoleta.png"),
+    name: 'Mural de los 200 años',
+    position: const LatLng(6.234175702496582, -75.1611738086747),
+  ),
+  MarkerModel(
+    description: lorem,
+    image: Image.asset("assets/images/plazoleta.png"),
+    name: 'Alcaldía',
+    position: const LatLng(6.23447240858383, -75.16138952194993),
+  ),
+  MarkerModel(
+    description: lorem,
+    image: Image.asset("assets/images/plazoleta.png"),
+    name: 'Casa Isidora Urrea',
+    position: const LatLng(6.234556025724918, -75.16122264940549),
+  ),
+  MarkerModel(
+    description: lorem,
+    image: Image.asset("assets/images/plazoleta.png"),
+    name: 'Hospital la Inmaculada',
+    position: const LatLng(6.233093330814248, -75.15692414269232),
+  ),
+  MarkerModel(
+    description: lorem,
+    image: Image.asset("assets/images/plazoleta.png"),
+    name: 'Letras Guatapé',
+    position: const LatLng(6.234454448410652, -75.15721275695284),
+  ),
+  MarkerModel(
+    description: lorem,
+    image: Image.asset("assets/images/plazoleta.png"),
+    name: 'Capilla hermanas de Santa Ana',
+    position: const LatLng(6.232221605334246, -75.15707683829378),
+  ),
+  MarkerModel(
+    description: lorem,
+    image: Image.asset("assets/images/plazoleta.png"),
+    name: 'Alto Verde',
+    position: const LatLng(6.231356424733816, -75.15328502323882),
+  )
 ];
 
 class MapScreen extends StatefulWidget {
@@ -95,7 +193,9 @@ class MapScreenState extends State<MapScreen> {
       _markers.add(Marker(
           markerId: MarkerId(marker.name),
           position: marker.position,
-          //infoWindow: InfoWindow(title: marker.name, snippet: 'Ver mas'),
+          infoWindow: InfoWindow(
+            title: marker.name,
+          ),
           onTap: () {
             _showMyDialogMarker(marker, context_);
           },
@@ -104,7 +204,7 @@ class MapScreenState extends State<MapScreen> {
     }
   }
 
-  Future<void> _showMyDialogMarker(
+  /* Future<void> _showMyDialogMarker(
       MarkerModel marker, BuildContext context_) async {
     return showDialog<void>(
       context: context_,
@@ -128,6 +228,85 @@ class MapScreenState extends State<MapScreen> {
               onPressed: () {
                 context_.pushNamed(DetailsScreen.name, extra: marker);
               },
+            ),
+          ],
+        );
+      },
+    );
+  } */
+
+  Future<void> _showMyDialogMarker(
+      MarkerModel marker, BuildContext context_) async {
+    return showModalBottomSheet(
+      context: context_,
+      useSafeArea: true,
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(15))),
+      isScrollControlled: true,
+      showDragHandle: true,
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      builder: (context) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: double.infinity,
+              child: marker.image),
+          Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Text(lorem,
+              style: TextStyle(fontSize: 16),
+            ),
+          ),
+            Padding(
+              padding: EdgeInsets.all(10),
+              child: Text(
+                marker.name,
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 8, bottom: 8, right: 8),
+              child: ElevatedButton.icon(
+                icon: Icon(
+                  Icons.location_on,
+                  color: Colors.white,
+                ),
+                style: ElevatedButton.styleFrom(
+                    minimumSize: const Size.fromHeight(50),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                    backgroundColor: Color(0xFFDB411F)),
+                label: Text(
+                  "Como llegar",
+                  style: TextStyle(fontSize: 16, color: Colors.white),
+                ),
+                onPressed: () {
+                  getPolyline();
+                  Navigator.pop(context_);
+                },
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 8, bottom: 8, right: 8),
+              child: ElevatedButton.icon(
+                icon: Icon(
+                  Icons.info,
+                  color: Colors.white,
+                ),
+                style: ElevatedButton.styleFrom(
+                    minimumSize: const Size.fromHeight(50),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                    backgroundColor: Color(0xFFDB411F)),
+                label: Text(
+                  "Ver más información",
+                  style: TextStyle(fontSize: 16, color: Colors.white),
+                ),
+                onPressed: () {
+                  context_.pushNamed(DetailsScreen.name, extra: marker);
+                },
+              ),
             ),
           ],
         );
