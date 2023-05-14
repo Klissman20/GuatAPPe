@@ -173,7 +173,7 @@ class MapScreenState extends State<MapScreen> {
   late GoogleMapController mapController;
   final Set<Marker> _markers = {};
 
-  String googleAPiKey = Environment.google_api_key;
+  String googleAPiKey = Environment.googleMapApiKey;
 
   late PolylinePoints polylinePoints = PolylinePoints();
   List<LatLng> polylineCoordinates = [];
