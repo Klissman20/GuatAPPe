@@ -2,19 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../config/theme/app_theme.dart';
 import '../../widgets/login/password_field_box.dart';
-import '../../widgets/login/user_field_box.dart';
+import '../../widgets/login/text_field_box.dart';
 import '../../screens/screens.dart';
 
-class LoginScreen extends StatefulWidget {
+class LoginScreen extends StatelessWidget {
   static const String name = 'login_screen';
 
   const LoginScreen({super.key});
 
-  @override
-  State<LoginScreen> createState() => _LoginScreenState();
-}
-
-class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,38 +29,50 @@ class _LoginView extends StatelessWidget {
     return SafeArea(
         child: Padding(
       padding: const EdgeInsets.symmetric(horizontal: 30),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 50),
-            child: Image.asset(
-              'assets/logo/logo_guatappe.png',
-              height: 150,
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 50),
+              child: Image.asset(
+                'assets/logo/logo_guatappe.png',
+                height: 150,
+              ),
             ),
-          ),
-          UserFieldBox(onValue: (value) => {}),
-          const SizedBox(
-            height: 20,
-          ),
-          PasswordFieldBox(onValue: (value) => {}),
-          const SizedBox(
-            height: 20,
-          ),
-          LogInButton(textStyleBtn: textStyleBtn)
-        ],
+            TextFieldBox(
+              typeText: 'Email',
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            PasswordFieldBox(),
+            const SizedBox(
+              height: 20,
+            ),
+            _LogInButton(textStyleBtn: textStyleBtn),
+            TextButton(
+                onPressed: () {
+                  context.pushNamed(RegisterScreen.name);
+                },
+                child: Text(
+                  'No tiene una cuenta? - Registrese',
+                  style: TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.bold),
+                ))
+          ],
+        ),
       ),
     ));
   }
 }
 
-class LogInButton extends StatelessWidget {
-  const LogInButton({
-    super.key,
+class _LogInButton extends StatelessWidget {
+  final TextStyle textStyleBtn;
+
+  const _LogInButton({
     required this.textStyleBtn,
   });
-
-  final TextStyle textStyleBtn;
 
   @override
   Widget build(BuildContext context) {

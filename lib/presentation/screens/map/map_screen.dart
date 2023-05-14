@@ -8,7 +8,8 @@ import 'package:guatappe/infrastructure/models/marker_model.dart';
 import 'package:go_router/go_router.dart';
 import 'package:guatappe/presentation/screens/screens.dart';
 
-final String lorem = 'Est in sunt adipisicing elit ipsum cillum et ea ullamco voluptate qui incididunt aute commodo. Deserunt excepteur commodo magna et id consequat sit nostrud. Officia ut cillum veniam est est quis aliquip adipisicing exercitation in.';
+final String lorem =
+    'Est in sunt adipisicing elit ipsum cillum et ea ullamco voluptate qui incididunt aute commodo. Deserunt excepteur commodo magna et id consequat sit nostrud. Officia ut cillum veniam est est quis aliquip adipisicing exercitation in.';
 List<MarkerModel> markers = [
   MarkerModel(
     description: lorem,
@@ -246,69 +247,70 @@ class MapScreenState extends State<MapScreen> {
       showDragHandle: true,
       clipBehavior: Clip.antiAliasWithSaveLayer,
       builder: (context) {
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: double.infinity,
-              child: marker.image),
-          Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: Text(lorem,
-              style: TextStyle(fontSize: 16),
-            ),
+        return SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(width: double.infinity, child: marker.image),
+              Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Text(
+                  lorem,
+                  style: TextStyle(fontSize: 16),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.all(10),
+                child: Text(
+                  marker.name,
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 8, bottom: 8, right: 8),
+                child: ElevatedButton.icon(
+                  icon: Icon(
+                    Icons.location_on,
+                    color: Colors.white,
+                  ),
+                  style: ElevatedButton.styleFrom(
+                      minimumSize: const Size.fromHeight(50),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)),
+                      backgroundColor: Color(0xFFDB411F)),
+                  label: Text(
+                    "Como llegar",
+                    style: TextStyle(fontSize: 16, color: Colors.white),
+                  ),
+                  onPressed: () {
+                    getPolyline();
+                    Navigator.pop(context_);
+                  },
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 8, bottom: 8, right: 8),
+                child: ElevatedButton.icon(
+                  icon: Icon(
+                    Icons.info,
+                    color: Colors.white,
+                  ),
+                  style: ElevatedButton.styleFrom(
+                      minimumSize: const Size.fromHeight(50),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)),
+                      backgroundColor: Color(0xFFDB411F)),
+                  label: Text(
+                    "Ver más información",
+                    style: TextStyle(fontSize: 16, color: Colors.white),
+                  ),
+                  onPressed: () {
+                    context_.pushNamed(DetailsScreen.name, extra: marker);
+                  },
+                ),
+              ),
+            ],
           ),
-            Padding(
-              padding: EdgeInsets.all(10),
-              child: Text(
-                marker.name,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 8, bottom: 8, right: 8),
-              child: ElevatedButton.icon(
-                icon: Icon(
-                  Icons.location_on,
-                  color: Colors.white,
-                ),
-                style: ElevatedButton.styleFrom(
-                    minimumSize: const Size.fromHeight(50),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)),
-                    backgroundColor: Color(0xFFDB411F)),
-                label: Text(
-                  "Como llegar",
-                  style: TextStyle(fontSize: 16, color: Colors.white),
-                ),
-                onPressed: () {
-                  getPolyline();
-                  Navigator.pop(context_);
-                },
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 8, bottom: 8, right: 8),
-              child: ElevatedButton.icon(
-                icon: Icon(
-                  Icons.info,
-                  color: Colors.white,
-                ),
-                style: ElevatedButton.styleFrom(
-                    minimumSize: const Size.fromHeight(50),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)),
-                    backgroundColor: Color(0xFFDB411F)),
-                label: Text(
-                  "Ver más información",
-                  style: TextStyle(fontSize: 16, color: Colors.white),
-                ),
-                onPressed: () {
-                  context_.pushNamed(DetailsScreen.name, extra: marker);
-                },
-              ),
-            ),
-          ],
         );
       },
     );

@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 
-class UserFieldBox extends StatelessWidget {
-  final ValueChanged<String> onValue;
-  const UserFieldBox({super.key, required this.onValue});
+class TextFieldBox extends StatelessWidget {
+  final String typeText;
+  const TextFieldBox({super.key, required this.typeText});
 
   @override
   Widget build(BuildContext context) {
-    final textController = TextEditingController();
-
     const TextStyle textStyle = TextStyle(color: Colors.white54, fontSize: 18);
 
     final outlineInputBorder = OutlineInputBorder(
@@ -15,7 +13,9 @@ class UserFieldBox extends StatelessWidget {
         borderRadius: BorderRadius.circular(20));
 
     final inputDecoration = InputDecoration(
-        hintText: 'E-mail',
+        labelText: typeText,
+        labelStyle: TextStyle(color: Colors.white54),
+        hintText: 'Enter your $typeText',
         hintStyle: textStyle,
         enabledBorder: outlineInputBorder,
         focusedBorder: outlineInputBorder,
@@ -26,12 +26,11 @@ class UserFieldBox extends StatelessWidget {
         enableSuggestions: false,
         cursorColor: Colors.white54,
         keyboardAppearance: Brightness.light,
-        keyboardType: TextInputType.emailAddress,
+        keyboardType: (typeText == 'Email')
+            ? TextInputType.emailAddress
+            : TextInputType.text,
         style: textStyle,
-        controller: textController,
         decoration: inputDecoration,
-        onFieldSubmitted: (value) {
-          onValue(value);
-        });
+        onFieldSubmitted: (value) {});
   }
 }
