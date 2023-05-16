@@ -56,10 +56,13 @@ class _LoginView extends StatelessWidget {
                   onPressed: () {
                     context.pushNamed(RegisterScreen.name);
                   },
-                  child: Text(
-                    'No tiene una cuenta? - Registrese',
-                    style: TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.bold),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      '¿No tiene una cuenta? - Registrese',
+                      style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
+                    ),
                   ))
             ],
           ),

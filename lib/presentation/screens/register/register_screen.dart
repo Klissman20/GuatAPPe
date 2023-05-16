@@ -14,7 +14,6 @@ class RegisterScreen extends StatelessWidget {
 
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: colorApp,
           forceMaterialTransparency: true,
           leading: BackButton(
             color: Colors.white,
@@ -23,10 +22,8 @@ class RegisterScreen extends StatelessWidget {
             },
           ),
         ),
-        body: Container(
-          color: AppTheme.colorApp,
-          child: _RegisterView(),
-        ));
+        body: _RegisterView(),
+        backgroundColor: colorApp,);
   }
 }
 
