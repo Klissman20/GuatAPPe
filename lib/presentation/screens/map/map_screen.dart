@@ -5,6 +5,7 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:guatappe/config/constants/environment.dart';
+import 'package:guatappe/config/theme/app_theme.dart';
 import 'package:guatappe/infrastructure/models/marker_model.dart';
 
 import 'package:geolocator/geolocator.dart';
@@ -252,6 +253,7 @@ class MapScreenState extends State<MapScreen> {
         floatingActionButton: isSheetLarge
             ? FloatingActionButton(
                 heroTag: "fab",
+                mini: true,
                 backgroundColor: Theme.of(context).colorScheme.primary,
                 elevation: 3,
                 child: Icon(Icons.close_rounded,
@@ -269,31 +271,64 @@ class MapScreenState extends State<MapScreen> {
         context: _scaffoldCtx,
         builder: (BuildContext bc) {
           return Container(
-              color: Colors.white,
+              decoration: BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
+                    spreadRadius: 1.5,
+                    color: Colors.grey,
+                    blurRadius: 3.0,
+                  )
+                ],
+                borderRadius: BorderRadius.only(topLeft: Radius.circular(15)),
+                color: Colors.white,
+              ),
               width: double.infinity,
-              height:
-                  isSheetLarge ? MediaQuery.sizeOf(context).height - 200 : null,
+              height: isSheetLarge
+                  ? MediaQuery.sizeOf(context).height -
+                      MediaQuery.sizeOf(context).height / 5
+                  : null,
               padding: const EdgeInsets.all(10),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.only(top: 8),
                     child: Text(
                       marker.name,
-                      style:
-                          TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: AppTheme.colorApp,
+                          shadows: [
+                            Shadow(color: Colors.grey, blurRadius: 2.0)
+                          ]),
                     ),
+                  ),
+
+                  Divider(
+                    height: 2.0,
+                    color: AppTheme.colorApp,
+                    thickness: 1.5,
                   ),
                   //Row(children: [Expanded(child: image)]),
                   isSheetLarge
                       ? Expanded(
                           child: SingleChildScrollView(
                             child: Column(children: [
-                              image,
+                              ClipRRect(
+                                borderRadius: BorderRadius.only(
+                                    bottomLeft: Radius.circular(5),
+                                    bottomRight: Radius.circular(5)),
+                                child: image,
+                              ),
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
-                                child: Text(marker.description),
+                                child: Text(
+                                  marker.description,
+                                  style: TextStyle(fontSize: 16),
+                                ),
                               ),
                             ]),
                           ),
@@ -307,8 +342,26 @@ class MapScreenState extends State<MapScreen> {
                           Expanded(
                             child: ElevatedButton.icon(
                                 onPressed: () {},
-                                icon: Icon(Icons.gif_box_outlined),
-                                label: Text('Activar AR')),
+                                style: ButtonStyle(
+                                    shape: MaterialStateProperty.all<
+                                            RoundedRectangleBorder>(
+                                        RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(5.0),
+                                    )),
+                                    backgroundColor: MaterialStateProperty.all(
+                                        AppTheme.colorApp)),
+                                icon: Icon(
+                                  size: 35,
+                                  Icons.dirty_lens,
+                                  color: Colors.white,
+                                ),
+                                label: Text(
+                                  'Activar AR',
+                                  style: TextStyle(
+                                      fontSize: 19,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold),
+                                )),
                           ),
                         ])
                       : Row(
@@ -316,8 +369,26 @@ class MapScreenState extends State<MapScreen> {
                           children: [
                               ElevatedButton.icon(
                                   onPressed: () {},
-                                  icon: Icon(Icons.location_pin),
-                                  label: Text('Como llegar')),
+                                  style: ButtonStyle(
+                                      shape: MaterialStateProperty.all<
+                                              RoundedRectangleBorder>(
+                                          RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(5.0),
+                                      )),
+                                      backgroundColor:
+                                          MaterialStateProperty.all(
+                                              AppTheme.colorApp)),
+                                  icon: Icon(
+                                    Icons.location_pin,
+                                    color: Colors.white,
+                                    size: 30,
+                                  ),
+                                  label: Text(
+                                    'Como llegar',
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 18),
+                                  )),
                               SizedBox(
                                 width: 30,
                               ),
@@ -328,8 +399,26 @@ class MapScreenState extends State<MapScreen> {
                                       _showSheet(marker);
                                     });
                                   },
-                                  icon: Icon(Icons.info_rounded),
-                                  label: Text('Ver mas')),
+                                  style: ButtonStyle(
+                                      shape: MaterialStateProperty.all<
+                                              RoundedRectangleBorder>(
+                                          RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(5.0),
+                                      )),
+                                      backgroundColor:
+                                          MaterialStateProperty.all(
+                                              AppTheme.colorApp)),
+                                  icon: Icon(
+                                    Icons.info_rounded,
+                                    color: Colors.white,
+                                    size: 30,
+                                  ),
+                                  label: Text(
+                                    'Ver mas',
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 18),
+                                  )),
                             ])
                 ],
               ));
