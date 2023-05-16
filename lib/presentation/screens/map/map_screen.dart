@@ -36,6 +36,7 @@ class MapScreenState extends State<MapScreen> {
   late PolylinePoints polylinePoints = PolylinePoints();
   List<LatLng> polylineCoordinates = [];
   Map<PolylineId, Polyline> polylines = {};
+  late PointLatLng myLocation;
 
   void setCustomMapPin() async {
     if (Platform.isIOS) {
@@ -64,13 +65,14 @@ class MapScreenState extends State<MapScreen> {
           },
           icon: pinLocationIcon));
     }
+    getUserCurrentLocation().then((value) {
+      myLocation = PointLatLng(value.latitude, value.longitude);
+      _markers.add(Marker(
+          markerId: MarkerId('value'),
+          position: LatLng(value.latitude, value.longitude)));
+    });
     setState(() {});
   }
-
-  // void animatedShow(double toSize) {
-  //   controller.animateTo(toSize,
-  //       duration: Duration(milliseconds: 200), curve: Curves.easeInOut);
-  // }
 
   // created method for getting user current location
   Future<Position> getUserCurrentLocation() async {
@@ -83,125 +85,13 @@ class MapScreenState extends State<MapScreen> {
     return await Geolocator.getCurrentPosition();
   }
 
-  /* Future<void> _showMyDialogMarker(
-      MarkerModel marker, BuildContext context_) async {
-    return showDialog<void>(
-      context: context_,
-      barrierDismissible: true, // user must tap button!
-      builder: (context_) {
-        return AlertDialog(
-          title: Text(marker.name),
-          content: SingleChildScrollView(
-            child: Text(marker.description),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('Como llegar'),
-              onPressed: () {
-                getPolyline();
-                Navigator.pop(context_);
-              },
-            ),
-            TextButton(
-              child: const Text('Ver más'),
-              onPressed: () {
-                context_.pushNamed(DetailsScreen.name, extra: marker);
-              },
-            ),
-          ],
-        );
-      },
-    );
-  } */
-
-/*   Future<void> _showMyDialogMarker(
-      MarkerModel marker, BuildContext context_) async {
-    return showModalBottomSheet(
-      context: context_,
-      useSafeArea: true,
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(15))),
-      isScrollControlled: true,
-      showDragHandle: true,
-      clipBehavior: Clip.antiAliasWithSaveLayer,
-      builder: (context) {
-        return SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(width: double.infinity, child: marker.image),
-              Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: Text(
-                  lorem,
-                  style: TextStyle(fontSize: 16),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.all(10),
-                child: Text(
-                  marker.name,
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 8, bottom: 8, right: 8),
-                child: ElevatedButton.icon(
-                  icon: Icon(
-                    Icons.location_on,
-                    color: Colors.white,
-                  ),
-                  style: ElevatedButton.styleFrom(
-                      minimumSize: const Size.fromHeight(50),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)),
-                      backgroundColor: Color(0xFFDB411F)),
-                  label: Text(
-                    "Como llegar",
-                    style: TextStyle(fontSize: 16, color: Colors.white),
-                  ),
-                  onPressed: () {
-                    getPolyline();
-                    Navigator.pop(context_);
-                  },
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 8, bottom: 8, right: 8),
-                child: ElevatedButton.icon(
-                  icon: Icon(
-                    Icons.info,
-                    color: Colors.white,
-                  ),
-                  style: ElevatedButton.styleFrom(
-                      minimumSize: const Size.fromHeight(50),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)),
-                      backgroundColor: Color(0xFFDB411F)),
-                  label: Text(
-                    "Ver más información",
-                    style: TextStyle(fontSize: 16, color: Colors.white),
-                  ),
-                  onPressed: () {
-                    context_.pushNamed(DetailsScreen.name, extra: marker);
-                  },
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
- */
-
-  getPolyline() async {
+  Future<void> getPolyline(PointLatLng origin, PointLatLng destination) async {
     PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
-        googleAPiKey,
-        const PointLatLng(6.234673108822359, -75.16320162604464),
-        const PointLatLng(6.232135092314113, -75.1564125818234),
-        travelMode: TravelMode.transit);
+        googleAPiKey, origin, destination,
+        travelMode: TravelMode.driving);
 
+    print("length");
+    print(result.points.length);
     if (result.points.isNotEmpty) {
       for (var point in result.points) {
         polylineCoordinates.add(LatLng(point.latitude, point.longitude));
@@ -210,16 +100,16 @@ class MapScreenState extends State<MapScreen> {
     PolylineId id = const PolylineId("poly");
     Polyline polyline = Polyline(
       polylineId: id,
-      color: const Color.fromRGBO(6, 1, 167, 0.6),
+      color: AppTheme.colorApp,
       width: 8,
       endCap: Cap.roundCap,
       startCap: Cap.roundCap,
       points: polylineCoordinates,
     );
     polylines[id] = polyline;
-    mapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-        zoom: 15.5, target: polylineCoordinates[result.points.length ~/ 2])));
-    setState(() {});
+
+    //  mapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+    //     zoom: 15, target: polylineCoordinates[result.points.length ~/ 2])));
   }
 
   @override
@@ -244,6 +134,7 @@ class MapScreenState extends State<MapScreen> {
                 onMapCreated(controller, context);
               },
               markers: _markers,
+              polylines: Set.of(polylines.values),
               mapToolbarEnabled: false,
               initialCameraPosition:
                   CameraPosition(target: center1, zoom: 15.5, tilt: 20.0),
@@ -368,7 +259,26 @@ class MapScreenState extends State<MapScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                               ElevatedButton.icon(
-                                  onPressed: () {},
+                                  onPressed: () async {
+                                    polylines.clear();
+                                    polylineCoordinates.clear();
+                                    polylinePoints = PolylinePoints();
+                                    await getPolyline(
+                                        myLocation,
+                                        PointLatLng(marker.position.latitude,
+                                            marker.position.longitude));
+                                    mapController.animateCamera(
+                                        CameraUpdate.newLatLngBounds(
+                                            LatLngBounds(
+                                                southwest: LatLng(
+                                                    myLocation.latitude,
+                                                    myLocation.longitude),
+                                                northeast: LatLng(
+                                                    marker.position.latitude,
+                                                    marker.position.longitude)),
+                                            50));
+                                    setState(() {});
+                                  },
                                   style: ButtonStyle(
                                       shape: MaterialStateProperty.all<
                                               RoundedRectangleBorder>(
