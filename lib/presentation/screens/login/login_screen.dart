@@ -27,40 +27,42 @@ class _LoginView extends StatelessWidget {
         color: AppTheme.colorApp, fontSize: 22, fontWeight: FontWeight.bold);
 
     return SafeArea(
-        child: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 30),
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 50),
-              child: Image.asset(
-                'assets/logo/logo_guatappe.png',
-                height: 150,
+        child: Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 30),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 50),
+                child: Image.asset(
+                  'assets/logo/logo_guatappe.png',
+                  height: 150,
+                ),
               ),
-            ),
-            TextFieldBox(
-              typeText: 'Email',
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            PasswordFieldBox(),
-            const SizedBox(
-              height: 20,
-            ),
-            _LogInButton(textStyleBtn: textStyleBtn),
-            TextButton(
-                onPressed: () {
-                  context.pushNamed(RegisterScreen.name);
-                },
-                child: Text(
-                  'No tiene una cuenta? - Registrese',
-                  style: TextStyle(
-                      color: Colors.white, fontWeight: FontWeight.bold),
-                ))
-          ],
+              TextFieldBox(
+                typeText: 'Email',
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              PasswordFieldBox(),
+              const SizedBox(
+                height: 20,
+              ),
+              _LogInButton(textStyleBtn: textStyleBtn),
+              TextButton(
+                  onPressed: () {
+                    context.pushNamed(RegisterScreen.name);
+                  },
+                  child: Text(
+                    'No tiene una cuenta? - Registrese',
+                    style: TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.bold),
+                  ))
+            ],
+          ),
         ),
       ),
     ));

@@ -15,6 +15,7 @@ class RegisterScreen extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: colorApp,
+          forceMaterialTransparency: true,
           leading: BackButton(
             color: Colors.white,
             onPressed: () {
@@ -36,62 +37,64 @@ class _RegisterView extends StatelessWidget {
   Widget build(BuildContext context) {
     final TextStyle textStyleBtn = TextStyle(
         color: AppTheme.colorApp, fontSize: 22, fontWeight: FontWeight.bold);
-    return SafeArea(
-        child: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 30),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              child: Image.asset(
-                'assets/logo/logo_guatappe.png',
-                height: 100,
+    return Center(
+      child: SafeArea(
+          child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 30),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: Image.asset(
+                  'assets/logo/logo_guatappe.png',
+                  height: 100,
+                ),
               ),
-            ),
-            TextFieldBox(
-              typeText: 'Username',
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            TextFieldBox(
-              typeText: 'Email',
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            TextFieldBox(
-              typeText: 'Gender',
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            TextFieldBox(
-              typeText: 'Phone Number',
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            TextFieldBox(
-              typeText: 'Country',
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            PasswordFieldBox(),
-            const SizedBox(
-              height: 20,
-            ),
-            _RegisterButton(textStyleBtn: textStyleBtn),
-            const SizedBox(
-              height: 20,
-            ),
-          ],
+              TextFieldBox(
+                typeText: 'Username',
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              TextFieldBox(
+                typeText: 'Email',
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              TextFieldBox(
+                typeText: 'Gender',
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              TextFieldBox(
+                typeText: 'Phone Number',
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              TextFieldBox(
+                typeText: 'Country',
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              PasswordFieldBox(),
+              const SizedBox(
+                height: 20,
+              ),
+              _RegisterButton(textStyleBtn: textStyleBtn),
+              const SizedBox(
+                height: 20,
+              ),
+            ],
+          ),
         ),
-      ),
-    ));
+      )),
+    );
   }
 }
 

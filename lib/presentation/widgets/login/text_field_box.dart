@@ -28,7 +28,9 @@ class TextFieldBox extends StatelessWidget {
         keyboardAppearance: Brightness.light,
         keyboardType: (typeText == 'Email')
             ? TextInputType.emailAddress
-            : TextInputType.text,
+            : (typeText == 'Phone Number')
+                ? TextInputType.number
+                : TextInputType.text,
         style: textStyle,
         decoration: inputDecoration,
         onFieldSubmitted: (value) {});
