@@ -30,6 +30,10 @@ flutter:
   assets:
     - .env
     - assets/logo/
+    - assets/images/calle.png
+    - assets/images/cordero.png
+    - assets/images/malecom.png
+    - assets/images/piedra.png
     - assets/images/plazoleta.png
     - assets/icono.png
     - assets/map_style.json

@@ -41,7 +41,7 @@ final Image image =
 List<MarkerModel> markers = [
   MarkerModel(
     description: lorem,
-    image: image,
+    image: Image.asset("assets/images/piedra.png", fit: BoxFit.cover),
     name: 'La Piedra',
     position: const LatLng(6.2207260149012455, -75.17947304698288),
   ),
@@ -71,7 +71,7 @@ List<MarkerModel> markers = [
   ),
   MarkerModel(
     description: lorem,
-    image: image,
+    image: Image.asset("assets/images/cordero.png", fit: BoxFit.cover),
     name: 'Cordero',
     position: const LatLng(6.2350918057533615, -75.16190866815133),
   ),
@@ -83,7 +83,7 @@ List<MarkerModel> markers = [
   ),
   MarkerModel(
     description: lorem,
-    image: image,
+    image: Image.asset("assets/images/malecom.png", fit: BoxFit.cover),
     name: 'Malecón',
     position: const LatLng(6.235541727677295, -75.16168794231076),
   ),
@@ -107,7 +107,7 @@ List<MarkerModel> markers = [
   ),
   MarkerModel(
     description: lorem,
-    image: image,
+    image: Image.asset("assets/images/calle.png", fit: BoxFit.cover),
     name: 'Calle Jiménez',
     position: const LatLng(6.2327577833006, -75.16103285510259),
   ),

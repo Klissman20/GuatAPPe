@@ -212,7 +212,7 @@ class MapScreenState extends State<MapScreen> {
                                 borderRadius: BorderRadius.only(
                                     bottomLeft: Radius.circular(5),
                                     bottomRight: Radius.circular(5)),
-                                child: image,
+                                child: marker.image,
                               ),
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
