@@ -185,7 +185,7 @@ List<MarkerModel> markers = [
   )
 ];
 
-LatLng center1 = const LatLng(6.233, -75.158);
+LatLng initialMapCenter = const LatLng(6.233, -75.158);
 
 class MarkerModel {
   String name;

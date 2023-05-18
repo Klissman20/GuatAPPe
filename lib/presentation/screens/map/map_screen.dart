@@ -79,7 +79,9 @@ class MapScreenState extends State<MapScreen> {
     getUserCurrentLocation().then((value) {
       myLocation = PointLatLng(value.latitude, value.longitude);
       _markers.add(Marker(
-          markerId: MarkerId('value'),
+          icon: BitmapDescriptor.defaultMarkerWithHue(
+              BitmapDescriptor.hueOrange),
+          markerId: MarkerId('MyLocation'),
           position: LatLng(value.latitude, value.longitude)));
     });
     setState(() {});
@@ -102,17 +104,34 @@ class MapScreenState extends State<MapScreen> {
         PointLatLng(marker.position.latitude, marker.position.longitude);
     PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
         googleAPiKey, myLocation, destination,
-        travelMode: TravelMode.driving);
+        travelMode: TravelMode.walking);
     polylines.clear();
     polylineCoordinates.clear();
-    polylinePoints = PolylinePoints();
+    double minLat = 0;
+    double minLong = 0;
+    double maxLat = 0;
+    double maxLong = 0;
     if (result.points.isNotEmpty) {
+      minLat = result.points.first.latitude;
+      minLong = result.points.first.longitude;
+      maxLat = result.points.first.latitude;
+      maxLong = result.points.first.longitude;
       for (var point in result.points) {
         polylineCoordinates.add(LatLng(point.latitude, point.longitude));
+        if (point.latitude < minLat) minLat = point.latitude;
+        if (point.latitude > maxLat) maxLat = point.latitude;
+        if (point.longitude < minLong) minLong = point.longitude;
+        if (point.longitude > maxLong) maxLong = point.longitude;
       }
     }
     PolylineId id = const PolylineId("poly");
     Polyline polyline = Polyline(
+      consumeTapEvents: true,
+      onTap: () => mapController.animateCamera(CameraUpdate.newLatLngBounds(
+          LatLngBounds(
+              southwest: LatLng(minLat, minLong),
+              northeast: LatLng(maxLat, maxLong)),
+          50)),
       polylineId: id,
       color: AppTheme.colorApp,
       width: 8,
@@ -124,9 +143,8 @@ class MapScreenState extends State<MapScreen> {
 
     mapController.animateCamera(CameraUpdate.newLatLngBounds(
         LatLngBounds(
-          southwest: LatLng(myLocation.latitude, myLocation.longitude),
-          northeast: marker.position,
-        ),
+            southwest: LatLng(minLat, minLong),
+            northeast: LatLng(maxLat, maxLong)),
         50));
   }
 
@@ -145,17 +163,26 @@ class MapScreenState extends State<MapScreen> {
         body: Builder(builder: (BuildContext ctx) {
           _scaffoldCtx = ctx;
           return SafeArea(
-              child: Stack(children: [
-            GoogleMap(
-              onMapCreated: (controller) {
-                onMapCreated(controller, context);
-              },
-              markers: _markers,
-              polylines: Set.of(polylines.values),
-              mapToolbarEnabled: false,
-              initialCameraPosition:
-                  CameraPosition(target: center1, zoom: 15.5, tilt: 20.0),
+              child: Column(children: [
+            Expanded(
+              child: GoogleMap(
+                myLocationEnabled: true,
+                onMapCreated: (controller) {
+                  onMapCreated(controller, context);
+                },
+                markers: _markers,
+                polylines: Set.of(polylines.values),
+                mapToolbarEnabled: false,
+                initialCameraPosition: CameraPosition(
+                    target: initialMapCenter, zoom: 15.5, tilt: 20.0),
+              ),
             ),
+            AnimatedContainer(
+                curve: Curves.easeIn,
+                duration: Duration(milliseconds: 500),
+                height: showSheet || isSheetLarge
+                    ? MediaQuery.of(context).size.height * 0.16
+                    : null)
           ]));
         }),
         floatingActionButton: isSheetLarge
@@ -175,6 +202,10 @@ class MapScreenState extends State<MapScreen> {
   }
 
   void _showSheet(MarkerModel marker) {
+    setState(() {
+      showSheet = true;
+    });
+
     sheetController = showBottomSheet(
         context: _scaffoldCtx,
         builder: (BuildContext bc) {
@@ -327,6 +358,8 @@ class MapScreenState extends State<MapScreen> {
         if (isSheetLarge) {
           isSheetLarge = false;
           _showSheet(marker);
+        } else {
+          showSheet = false;
         }
       });
     });

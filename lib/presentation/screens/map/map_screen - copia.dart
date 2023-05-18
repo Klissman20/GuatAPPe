@@ -137,7 +137,7 @@ class MapScreenState extends State<MapScreen> {
               polylines: Set.of(polylines.values),
               mapToolbarEnabled: false,
               initialCameraPosition:
-                  CameraPosition(target: center1, zoom: 15.5, tilt: 20.0),
+                  CameraPosition(target: initialMapCenter, zoom: 15.5, tilt: 20.0),
             ),
           ]));
         }),
