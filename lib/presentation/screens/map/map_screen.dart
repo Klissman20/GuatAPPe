@@ -9,6 +9,7 @@ import 'package:guatappe/config/theme/app_theme.dart';
 import 'package:guatappe/infrastructure/models/marker_model.dart';
 
 import 'package:geolocator/geolocator.dart';
+import 'package:guatappe/presentation/widgets/widgets.dart';
 
 class MapScreen extends StatefulWidget {
   static const String name = 'map_screen';
@@ -121,14 +122,12 @@ class MapScreenState extends State<MapScreen> {
     );
     polylines[id] = polyline;
 
-    mapController
-        .animateCamera(CameraUpdate.newLatLngBounds(
-            LatLngBounds(
-              southwest: LatLng(myLocation.latitude, myLocation.longitude),
-              northeast: marker.position,
-            ),
-            50))
-        .then((value) {});
+    mapController.animateCamera(CameraUpdate.newLatLngBounds(
+        LatLngBounds(
+          southwest: LatLng(myLocation.latitude, myLocation.longitude),
+          northeast: marker.position,
+        ),
+        50));
   }
 
   @override
@@ -199,18 +198,12 @@ class MapScreenState extends State<MapScreen> {
                         BorderRadius.only(topLeft: Radius.circular(15)),
                     color: Colors.white,
                   ),
-                  width: double.infinity,
-                  height: double.minPositive,
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
                     children: [
                       Dismissible(
                         key: UniqueKey(),
                         direction: DismissDirection.vertical,
-
                         confirmDismiss: (direction) {
                           if (direction == DismissDirection.up) {
                             isSheetLarge = !isSheetLarge;
@@ -225,10 +218,8 @@ class MapScreenState extends State<MapScreen> {
                         child: SizedBox(
                             width: 50,
                             child: Padding(
-                              padding: const EdgeInsets.only(
-                                top: 2,
-                              ),
-                              child: Divider(thickness: 5),
+                              padding: const EdgeInsets.symmetric(vertical: 8),
+                              child: Divider(thickness: 5, height: 2),
                             )),
                       ),
                       Text(
@@ -246,7 +237,6 @@ class MapScreenState extends State<MapScreen> {
                         color: AppTheme.colorApp,
                         thickness: 1.5,
                       ),
-                      //Row(children: [Expanded(child: image)]),
                       isSheetLarge
                           ? Expanded(
                               child: SingleChildScrollView(
@@ -271,159 +261,59 @@ class MapScreenState extends State<MapScreen> {
                           : SizedBox(
                               height: 0,
                             ),
-
+                      SizedBox(height: 5),
                       isSheetLarge
                           ? Row(children: [
                               Expanded(
-                                child: ElevatedButton.icon(
-                                    onPressed: () {
+                                child: CustomButton(
+                                    iconData: Icons.dirty_lens,
+                                    width: 0.6,
+                                    buttonText: 'Activar AR',
+                                    onTap: () {
                                       showDialog(
                                         context: context,
                                         builder: (context) {
-                                          return AlertDialog(
-                                              icon: Icon(Icons.info,
-                                                  color: AppTheme.colorApp,
-                                                  size: 50),
-                                              actionsPadding: EdgeInsets.all(5),
-                                              title: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  const Text(
-                                                      'No estas cerca...'),
-                                                  Icon(Icons
-                                                      .sentiment_dissatisfied)
-                                                ],
-                                              ),
-                                              content: Text(
-                                                'Debes estar cerca de la ubicación ${marker.name} para vivir la experiencia AR',
-                                                textAlign: TextAlign.center,
-                                              ),
-                                              actions: [
-                                                TextButton(
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      Icon(
-                                                        Icons.location_on,
-                                                        color: Colors.white,
-                                                        size: 30,
-                                                      ),
-                                                      Container(width: 5),
-                                                      Text(
-                                                        'Cómo llegar',
-                                                        style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontSize: 18),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  onPressed: () async {
-                                                    Navigator.of(context).pop();
-                                                    sheetController.close();
-                                                    await getPolyline(marker);
-                                                    setState(() {});
-                                                  },
-                                                  style: ButtonStyle(
-                                                      backgroundColor:
-                                                          MaterialStateProperty
-                                                              .all(AppTheme
-                                                                  .colorApp)),
-                                                ),
-                                              ]);
+                                          return NotNearDialog(
+                                            marker: marker,
+                                            onPressed: () async {
+                                              Navigator.of(context).pop();
+                                              sheetController.close();
+                                              await getPolyline(marker);
+                                              setState(() {});
+                                            },
+                                          );
                                         },
                                       );
-
-                                      /* getPolyline(marker);
-                                  Navigator.pop(context);
-                                  sheetController.close();
-                                  setState(() {}); */
-                                    },
-                                    style: ButtonStyle(
-                                        shape: MaterialStateProperty.all<
-                                                RoundedRectangleBorder>(
-                                            RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(5.0),
-                                        )),
-                                        backgroundColor:
-                                            MaterialStateProperty.all(
-                                                AppTheme.colorApp)),
-                                    icon: Icon(
-                                      size: 35,
-                                      Icons.dirty_lens,
-                                      color: Colors.white,
-                                    ),
-                                    label: Text(
-                                      'Activar AR',
-                                      style: TextStyle(
-                                          fontSize: 19,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold),
-                                    )),
+                                    }),
                               ),
                             ])
                           : Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                  ElevatedButton.icon(
-                                      onPressed: () async {
-                                        await getPolyline(marker);
-                                        setState(() {});
-                                      },
-                                      style: ButtonStyle(
-                                          shape: MaterialStateProperty.all<
-                                                  RoundedRectangleBorder>(
-                                              RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(5.0),
-                                          )),
-                                          backgroundColor:
-                                              MaterialStateProperty.all(
-                                                  AppTheme.colorApp)),
-                                      icon: Icon(
-                                        Icons.location_pin,
-                                        color: Colors.white,
-                                        size: 30,
-                                      ),
-                                      label: Text(
-                                        'Cómo llegar',
-                                        style: TextStyle(
-                                            color: Colors.white, fontSize: 18),
-                                      )),
-                                  SizedBox(
-                                    width: 30,
-                                  ),
-                                  ElevatedButton.icon(
-                                      onPressed: () {
-                                        setState(() {
-                                          isSheetLarge = !isSheetLarge;
-                                          _showSheet(marker);
-                                        });
-                                      },
-                                      style: ButtonStyle(
-                                          shape: MaterialStateProperty.all<
-                                                  RoundedRectangleBorder>(
-                                              RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(5.0),
-                                          )),
-                                          backgroundColor:
-                                              MaterialStateProperty.all(
-                                                  AppTheme.colorApp)),
-                                      icon: Icon(
-                                        Icons.info_rounded,
-                                        color: Colors.white,
-                                        size: 30,
-                                      ),
-                                      label: Text(
-                                        'Ver más',
-                                        style: TextStyle(
-                                            color: Colors.white, fontSize: 18),
-                                      )),
-                                ]),
+                                CustomButton(
+                                    iconData: Icons.location_pin,
+                                    width: 0.4,
+                                    buttonText: "Cómo llegar",
+                                    onTap: () async {
+                                      await getPolyline(marker);
+                                      setState(() {});
+                                    }),
+                                SizedBox(
+                                  width: 30,
+                                ),
+                                CustomButton(
+                                  iconData: Icons.info_rounded,
+                                  width: 0.4,
+                                  buttonText: 'Ver más',
+                                  onTap: () {
+                                    setState(() {
+                                      isSheetLarge = !isSheetLarge;
+                                      _showSheet(marker);
+                                    });
+                                  },
+                                )
+                              ],
+                            ),
                       SizedBox(height: 10)
                     ],
                   ));
