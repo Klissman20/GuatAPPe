@@ -50,8 +50,7 @@ class MapScreenState extends State<MapScreen> {
   }
 
 // Create Map with markers
-  Future<void> onMapCreated(
-      GoogleMapController controller, BuildContext context_) async {
+  Future<void> onMapCreated(GoogleMapController controller) async {
     mapController = controller;
     controller.setMapStyle(mapStyle);
     for (final marker in markers) {
@@ -76,26 +75,31 @@ class MapScreenState extends State<MapScreen> {
           },
           icon: pinLocationIcon));
     }
-    getUserCurrentLocation().then((value) {
-      myLocation = PointLatLng(value.latitude, value.longitude);
-      _markers.add(Marker(
-          icon: BitmapDescriptor.defaultMarkerWithHue(
-              BitmapDescriptor.hueOrange),
-          markerId: MarkerId('MyLocation'),
-          position: LatLng(value.latitude, value.longitude)));
-    });
+    getUserCurrentLocation();
     setState(() {});
   }
 
 // getting user current location
-  Future<Position> getUserCurrentLocation() async {
+  Future<void> getUserCurrentLocation() async {
     await Geolocator.requestPermission()
         .then((value) {})
         .onError((error, stackTrace) async {
       await Geolocator.requestPermission();
       print("ERROR" + error.toString());
     });
-    return await Geolocator.getCurrentPosition();
+    await Geolocator.getCurrentPosition().then((position) {
+      myLocation = PointLatLng(position.latitude, position.longitude);
+      if (_markers.contains(Marker(markerId: MarkerId('MyLocation')))) {
+        _markers.remove(Marker(markerId: MarkerId('MyLocation')));
+      }
+      _markers.add(Marker(
+          icon:
+              BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange),
+          markerId: MarkerId('MyLocation'),
+          position: LatLng(position.latitude, position.longitude)));
+
+      setState(() {});
+    });
   }
 
 // Drawing route goto point on map
@@ -167,9 +171,7 @@ class MapScreenState extends State<MapScreen> {
             Expanded(
               child: GoogleMap(
                 myLocationEnabled: true,
-                onMapCreated: (controller) {
-                  onMapCreated(controller, context);
-                },
+                onMapCreated: onMapCreated,
                 markers: _markers,
                 polylines: Set.of(polylines.values),
                 mapToolbarEnabled: false,
@@ -216,138 +218,141 @@ class MapScreenState extends State<MapScreen> {
             expand: false,
             snap: true,
             builder: (context, scrollController) {
-              return Container(
-                  decoration: BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                        spreadRadius: 1.5,
-                        color: Colors.grey,
-                        blurRadius: 3.0,
-                      )
-                    ],
-                    borderRadius:
-                        BorderRadius.only(topLeft: Radius.circular(15)),
-                    color: Colors.white,
-                  ),
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Column(
-                    children: [
-                      Dismissible(
-                        key: UniqueKey(),
-                        direction: DismissDirection.vertical,
-                        confirmDismiss: (direction) {
-                          if (direction == DismissDirection.up) {
-                            isSheetLarge = !isSheetLarge;
-                            _showSheet(marker);
-                          } else {
-                            sheetController.close();
-                          }
-                          setState(() {});
-                          return Future.value(
-                              false); // always deny the actual dismiss, else it will expect the widget to be removed
-                        },
-                        child: SizedBox(
-                            width: 50,
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 8),
-                              child: Divider(thickness: 5, height: 2),
-                            )),
-                      ),
-                      Text(
-                          textAlign: TextAlign.center,
-                          marker.name,
-                          style: TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                              color: AppTheme.colorApp,
-                              shadows: [
-                                Shadow(color: Colors.grey, blurRadius: 2.0)
-                              ])),
-                      Divider(
-                        height: 2.0,
-                        color: AppTheme.colorApp,
-                        thickness: 1.5,
-                      ),
-                      isSheetLarge
-                          ? Expanded(
-                              child: SingleChildScrollView(
-                                controller: scrollController,
-                                child: Column(children: [
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.only(
-                                        bottomLeft: Radius.circular(5),
-                                        bottomRight: Radius.circular(5)),
-                                    child: marker.image,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      marker.description,
-                                      style: TextStyle(fontSize: 16),
+              return SafeArea(
+                child: Container(
+                    decoration: BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                          spreadRadius: 1.5,
+                          color: Colors.grey,
+                          blurRadius: 3.0,
+                        )
+                      ],
+                      borderRadius:
+                          BorderRadius.only(topLeft: Radius.circular(15)),
+                      color: Colors.white,
+                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: Column(
+                      children: [
+                        Dismissible(
+                          key: UniqueKey(),
+                          direction: DismissDirection.vertical,
+                          confirmDismiss: (direction) {
+                            if (direction == DismissDirection.up) {
+                              isSheetLarge = !isSheetLarge;
+                              _showSheet(marker);
+                            } else {
+                              sheetController.close();
+                            }
+                            setState(() {});
+                            return Future.value(
+                                false); // always deny the actual dismiss, else it will expect the widget to be removed
+                          },
+                          child: SizedBox(
+                              width: 50,
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 8),
+                                child: Divider(thickness: 5, height: 2),
+                              )),
+                        ),
+                        Text(
+                            textAlign: TextAlign.center,
+                            marker.name,
+                            style: TextStyle(
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold,
+                                color: AppTheme.colorApp,
+                                shadows: [
+                                  Shadow(color: Colors.grey, blurRadius: 2.0)
+                                ])),
+                        Divider(
+                          height: 2.0,
+                          color: AppTheme.colorApp,
+                          thickness: 1.5,
+                        ),
+                        isSheetLarge
+                            ? Expanded(
+                                child: SingleChildScrollView(
+                                  controller: scrollController,
+                                  child: Column(children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.only(
+                                          bottomLeft: Radius.circular(5),
+                                          bottomRight: Radius.circular(5)),
+                                      child: marker.image,
                                     ),
-                                  ),
-                                ]),
-                              ),
-                            )
-                          : SizedBox(
-                              height: 0,
-                            ),
-                      SizedBox(height: 5),
-                      isSheetLarge
-                          ? Row(children: [
-                              Expanded(
-                                child: CustomButton(
-                                    iconData: Icons.dirty_lens,
-                                    width: 0.6,
-                                    buttonText: 'Activar AR',
-                                    onTap: () {
-                                      showDialog(
-                                        context: context,
-                                        builder: (context) {
-                                          return NotNearDialog(
-                                            marker: marker,
-                                            onPressed: () async {
-                                              Navigator.of(context).pop();
-                                              sheetController.close();
-                                              await getPolyline(marker);
-                                              setState(() {});
-                                            },
-                                          );
-                                        },
-                                      );
-                                    }),
-                              ),
-                            ])
-                          : Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                CustomButton(
-                                    iconData: Icons.location_pin,
-                                    width: 0.4,
-                                    buttonText: "Cómo llegar",
-                                    onTap: () async {
-                                      await getPolyline(marker);
-                                      setState(() {});
-                                    }),
-                                SizedBox(
-                                  width: 30,
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        marker.description,
+                                        style: TextStyle(fontSize: 16),
+                                      ),
+                                    ),
+                                  ]),
                                 ),
-                                CustomButton(
-                                  iconData: Icons.info_rounded,
-                                  width: 0.4,
-                                  buttonText: 'Ver más',
-                                  onTap: () {
-                                    setState(() {
-                                      isSheetLarge = !isSheetLarge;
-                                      _showSheet(marker);
-                                    });
-                                  },
-                                )
-                              ],
-                            ),
-                      SizedBox(height: 10)
-                    ],
-                  ));
+                              )
+                            : SizedBox(
+                                height: 0,
+                              ),
+                        SizedBox(height: 5),
+                        isSheetLarge
+                            ? Row(children: [
+                                Expanded(
+                                  child: CustomButton(
+                                      iconData: Icons.dirty_lens,
+                                      width: 0.6,
+                                      buttonText: 'Activar AR',
+                                      onTap: () {
+                                        showDialog(
+                                          context: context,
+                                          builder: (context) {
+                                            return NotNearDialog(
+                                              marker: marker,
+                                              onPressed: () async {
+                                                Navigator.of(context).pop();
+                                                sheetController.close();
+                                                await getPolyline(marker);
+                                                setState(() {});
+                                              },
+                                            );
+                                          },
+                                        );
+                                      }),
+                                ),
+                              ])
+                            : Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  CustomButton(
+                                      iconData: Icons.location_pin,
+                                      width: 0.4,
+                                      buttonText: "Cómo llegar",
+                                      onTap: () async {
+                                        await getPolyline(marker);
+                                        setState(() {});
+                                      }),
+                                  SizedBox(
+                                    width: 30,
+                                  ),
+                                  CustomButton(
+                                    iconData: Icons.info_rounded,
+                                    width: 0.4,
+                                    buttonText: 'Ver más',
+                                    onTap: () {
+                                      setState(() {
+                                        isSheetLarge = !isSheetLarge;
+                                        _showSheet(marker);
+                                      });
+                                    },
+                                  )
+                                ],
+                              ),
+                        SizedBox(height: 10)
+                      ],
+                    )),
+              );
             },
           );
         });
