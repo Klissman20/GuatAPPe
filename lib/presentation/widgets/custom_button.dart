@@ -4,12 +4,10 @@ import 'package:guatappe/config/theme/app_theme.dart';
 class CustomButton extends StatelessWidget {
   const CustomButton({
     Key? key,
-    required this.iconData,
     required this.width,
     required this.buttonText,
     this.onTap,
   }) : super(key: key);
-  final IconData iconData;
   final double width;
   final String buttonText;
   final Function()? onTap;
@@ -32,15 +30,6 @@ class CustomButton extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Container(
-                  height: 40.0,
-                  padding: EdgeInsets.only(left: 10),
-                  child: Icon(
-                    iconData,
-                    size: 30,
-                    color: Colors.white,
-                  ),
-                ),
                 Expanded(
                   child: Text(
                     buttonText,
