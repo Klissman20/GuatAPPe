@@ -1,6 +1,7 @@
+import 'dart:async';
 import 'dart:io';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:guatappe/presentation/widgets/widgets.dart';
-import 'package:solid_bottom_sheet/solid_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
@@ -9,16 +10,17 @@ import 'package:guatappe/config/constants/environment.dart';
 import 'package:guatappe/config/theme/app_theme.dart';
 import 'package:guatappe/infrastructure/models/marker_model.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:sliding_up_panel2/sliding_up_panel2.dart';
 
 class MapScreen extends StatefulWidget {
   static const String name = 'map_screen';
   const MapScreen({super.key});
 
   @override
-  State<MapScreen> createState() => MapScreenState();
+  State<MapScreen> createState() => _MapScreenState();
 }
 
-class MapScreenState extends State<MapScreen> {
+class _MapScreenState extends State<MapScreen> {
 // Google Maps & Markers
   late String mapStyle;
   late BitmapDescriptor pinLocationIcon;
@@ -26,10 +28,7 @@ class MapScreenState extends State<MapScreen> {
   final Set<Marker> _markers = {};
   late MarkerModel selectedMarker = markers[0];
   String googleAPiKey = Environment.googleMapApiKey;
-// Details View - show BottomSheet
-  final SolidController sheetController = SolidController();
-  bool showSheet = false;
-  bool isSheetLarge = false;
+  final GlobalKey<ScaffoldState> key = GlobalKey();
 
 // Draw Route GoTo Point
   late PolylinePoints polylinePoints = PolylinePoints();
@@ -37,13 +36,18 @@ class MapScreenState extends State<MapScreen> {
   Map<PolylineId, Polyline> polylines = {};
   late PointLatLng myLocation;
 
+// Slide Up Panel
+  late final ScrollController scrollController;
+  late final PanelController panelController;
+  bool isPanelClosed = true;
+
   void setCustomMapPin() async {
     if (Platform.isIOS) {
       pinLocationIcon = await BitmapDescriptor.fromAssetImage(
           const ImageConfiguration(), 'assets/logo/icono_40x40.png');
     } else if (Platform.isAndroid) {
       pinLocationIcon = await BitmapDescriptor.fromAssetImage(
-          const ImageConfiguration(), 'assets/logo/icono_150x150.png');
+          const ImageConfiguration(), 'assets/icono.png');
     }
   }
 
@@ -58,22 +62,32 @@ class MapScreenState extends State<MapScreen> {
           infoWindow: InfoWindow(
             title: marker.name,
             onTap: () {
-                sheetController.height = 500;
+              panelController.open();
             },
           ),
           onTap: () {
-            setState(() {
-              isSheetLarge = selectedMarker == marker;
-              selectedMarker = marker;
-            });
+            if (selectedMarker == marker)
+              panelController.open();
+            else
+              setState(() {
+                selectedMarker = marker;
+              });
           },
           icon: pinLocationIcon));
     }
     getUserCurrentLocation();
     setState(() {});
+    Timer(
+        const Duration(milliseconds: 1500),
+        () => mapController.animateCamera(CameraUpdate.newCameraPosition(
+            CameraPosition(
+                target: initialMapCenter,
+                zoom: 16.5,
+                tilt: 70.0,
+                bearing: 110))));
   }
 
-// getting user current location
+  // getting user current location
   Future<void> getUserCurrentLocation() async {
     await Geolocator.requestPermission()
         .then((value) {})
@@ -146,109 +160,287 @@ class MapScreenState extends State<MapScreen> {
         50));
   }
 
+  Widget _panel() {
+    return MediaQuery.removePadding(
+        context: context,
+        child: Container(
+          margin: EdgeInsets.only(top: 15),
+          child: SingleChildScrollView(
+              physics: PanelScrollPhysics(controller: panelController),
+              controller: scrollController,
+              child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 35),
+                    CarouselSlider(
+                      options: CarouselOptions(
+                        enlargeCenterPage: true,
+                        enlargeFactor: 0.35,
+                        height: 260,
+                        autoPlayInterval: Duration(seconds: 4),
+                        viewportFraction: 1,
+                        autoPlay: !isPanelClosed,
+                      ),
+                      items: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.all(Radius.circular(8)),
+                            child: selectedMarker.image,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.all(Radius.circular(8)),
+                            child: Image.asset('assets/images/cordero.png',
+                                fit: BoxFit.cover),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.all(Radius.circular(8)),
+                            child: Image.asset('assets/images/calle.png',
+                                fit: BoxFit.cover),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Text(
+                        selectedMarker.description,
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ),
+                    const SizedBox(height: 50),
+                  ])),
+        ));
+  }
+
   @override
   void initState() {
     rootBundle.loadString('assets/map_style.json').then((string) {
       mapStyle = string;
     });
     setCustomMapPin();
+    scrollController = ScrollController();
+    panelController = PanelController();
     super.initState();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Builder(builder: (BuildContext ctx) {
-        return SafeArea(
-            child: GoogleMap(
-          myLocationEnabled: true,
-          onMapCreated: onMapCreated,
-          markers: _markers,
-          polylines: Set.of(polylines.values),
-          mapToolbarEnabled: false,
-          initialCameraPosition:
-              CameraPosition(target: initialMapCenter, zoom: 15.5, tilt: 20.0),
-        ));
-      }),
-      bottomSheet: SolidBottomSheet(
-        controller: sheetController,
-        toggleVisibilityOnTap: true,
-        showOnAppear: false,
-        elevation: 2.5,
-        headerBar: Container(
-          decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(10), topRight: Radius.circular(10))),
-          child: Column(
-            children: [
-              Container(
-                margin: EdgeInsets.only(top: 5),
-                decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.4),
-                    borderRadius: BorderRadius.circular(3)),
-                height: 5,
-                width: 45,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 8),
-                child: Text(
-                  selectedMarker.name,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      shadows: [Shadow(color: Colors.grey, blurRadius: 2.0)]),
-                ),
-              ),
-            ],
-          ),
-        ),
-        body: Container(
-          color: Colors.white,
-          padding: EdgeInsets.symmetric(horizontal: 10),
-            child: SingleChildScrollView(
+  final BorderRadius _borderRadius = const BorderRadius.only(
+      topLeft: Radius.circular(18.0), topRight: Radius.circular(18.0));
+
+  Widget _header() {
+    return ForceDraggableWidget(
+      child: Container(
+          width: MediaQuery.of(context).size.width,
+          decoration:
+              BoxDecoration(borderRadius: _borderRadius, color: Colors.white),
           child: Column(children: [
-            ClipRRect(
-              borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(5),
-                  bottomRight: Radius.circular(5)),
-              child: selectedMarker.image,
+            Container(
+              width: 55,
+              margin: const EdgeInsets.only(top: 5),
+              height: 5,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(3),
+                  color: Colors.black.withOpacity(0.5)),
             ),
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.only(top: 8),
               child: Text(
-                selectedMarker.description,
-                style: TextStyle(fontSize: 16),
+                selectedMarker.name,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    shadows: [Shadow(color: Colors.grey, blurRadius: 2.0)]),
               ),
             ),
-          ]),
-        )),
-        smoothness: Smoothness.low,
-      ),
-      bottomNavigationBar: Container(
-        color: Colors.white,
-        height: MediaQuery.of(context).size.height * 0.1,
-        child: Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            CustomButton(
+            Divider(height: 1)
+          ])),
+    );
+  }
+
+  Widget _footer() {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      color: Colors.white,
+      padding: EdgeInsets.symmetric(vertical: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          AnimatedContainer(
+            curve: Curves.easeInOutExpo,
+            duration: Duration(milliseconds: 200),
+            width: isPanelClosed ? MediaQuery.of(context).size.width / 2 : 0,
+            child: CustomButton(
                 width: 0.4,
                 buttonText: "Cómo llegar",
                 onTap: () async {
                   await getPolyline(selectedMarker);
                   setState(() {});
                 }),
-            CustomButton(
+          ),
+          AnimatedContainer(
+            curve: Curves.easeInOutExpo,
+            duration: Duration(milliseconds: 200),
+            width: isPanelClosed ? 0 : MediaQuery.of(context).size.width,
+            child: CustomButton(
+              width: 0.6,
+              buttonText: 'Activar AR',
+              onTap: () {
+                showGeneralDialog(
+                    context: context,
+                    barrierDismissible: true,
+                    barrierLabel: '',
+                    pageBuilder: (context, a1, a2) {
+                      return Container();
+                    },
+                    transitionBuilder: (ctx, a1, a2, child) {
+                      return Transform.scale(
+                        scale: Curves.easeInOut.transform(a1.value),
+                        child: NotNearDialog(
+                            marker: selectedMarker,
+                            onPressed: () async {
+                              Navigator.of(context).pop();
+                              panelController.close();
+                              await getPolyline(selectedMarker);
+                              setState(() {});
+                            }),
+                      );
+                    });
+              },
+            ),
+          ),
+          AnimatedContainer(
+            curve: Curves.easeInOutExpo,
+            duration: Duration(milliseconds: 200),
+            width: isPanelClosed ? MediaQuery.of(context).size.width / 2 : 0,
+            child: CustomButton(
               width: 0.4,
               buttonText: 'Ver más',
               onTap: () {
-                sheetController.height = 500;
+                panelController.open();
               },
-            )
-          ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final Size size = MediaQuery.of(context).size;
+    return Scaffold(
+      key: key,
+      body: SafeArea(
+        child: Material(
+          child: Stack(
+            children: [
+              SlidingUpPanel(
+                body: Container(
+                  margin: EdgeInsets.only(
+                      bottom: size.height - size.height * 0.835),
+                  color: Colors.white,
+                  child: GoogleMap(
+                    myLocationEnabled: true,
+                    onMapCreated: onMapCreated,
+                    markers: _markers,
+                    polylines: Set.of(polylines.values),
+                    mapToolbarEnabled: false,
+                    initialCameraPosition:
+                        CameraPosition(target: initialMapCenter, zoom: 13),
+                  ),
+                ),
+                controller: panelController,
+                scrollController: scrollController,
+                header: _header(),
+                backdropEnabled: true,
+                backdropOpacity: 0.4,
+                panelBuilder: () => _panel(),
+                borderRadius: _borderRadius,
+                maxHeight: size.height * 0.85,
+                footer: _footer(),
+                onPanelSlide: (double pos) {
+                  if (pos == 0)
+                    setState(() {
+                      isPanelClosed = true;
+                    });
+                  else if (pos == 1) {
+                    setState(() {
+                      isPanelClosed = false;
+                    });
+                    if (scrollController.offset > 0)
+                      scrollController.animateTo(2,
+                          duration: Duration(milliseconds: 350),
+                          curve: Curves.fastOutSlowIn);
+                  }
+                },
+              ),
+              Positioned(
+                  right: 10,
+                  bottom: MediaQuery.of(context).size.height * 0.82,
+                  child: AnimatedContainer(
+                    curve: Curves.fastOutSlowIn,
+                    duration: const Duration(milliseconds: 250),
+                    width: isPanelClosed ? 0 : 45,
+                    height: isPanelClosed ? 0 : 40,
+                    child: FloatingActionButton(
+                      backgroundColor: AppTheme.colorApp,
+                      onPressed: () {
+                        panelController.close();
+                      },
+                      elevation: 3,
+                      shape: const CircleBorder(),
+                      mini: true,
+                      child: Icon(
+                        Icons.close_rounded,
+                        size: isPanelClosed ? 0 : 28,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ))
+            ],
+          ),
         ),
+      ),
+      endDrawer: Drawer(
+          child: ListView(
+        children: [
+          UserAccountsDrawerHeader(
+            accountName: Text('David Román'),
+            accountEmail: Text(
+              'roman.david@gmail.com',
+              style: TextStyle(decoration: TextDecoration.underline),
+            ),
+            currentAccountPicture: Image.asset('assets/logo/logo_guatappe.png'),
+          ),
+          ListTile(
+            leading: Icon(Icons.account_box),
+            title: Text('Mi Cuenta'),
+          ),
+          ListTile(
+            leading: Icon(Icons.favorite),
+            title: Text('Mis Favoritos'),
+          ),
+          ListTile(
+            leading: Icon(Icons.logout),
+            title: Text('Salir'),
+          ),
+        ],
+      )),
+      floatingActionButtonLocation: FloatingActionButtonLocation.miniCenterTop,
+      floatingActionButton: FloatingActionButton(
+        heroTag: 'fab2',
+        backgroundColor: AppTheme.colorApp,
+        onPressed: () => key.currentState!.openEndDrawer(),
+        mini: true,
+        child: Icon(Icons.menu, color: Colors.white),
       ),
     );
   }

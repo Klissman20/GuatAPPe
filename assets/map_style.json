@@ -11,6 +11,15 @@
     ]
   },
   {
+    "featureType": "landscape.natural",
+    "elementType": "geometry.fill",
+    "stylers": [
+      {
+        "color": "#daf1e1"
+      }
+    ]
+  },
+  {
     "featureType": "poi.attraction",
     "stylers": [
       {
@@ -31,6 +40,15 @@
     "stylers": [
       {
         "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "water",
+    "elementType": "geometry.fill",
+    "stylers": [
+      {
+        "color": "#83ccec"
       }
     ]
   }

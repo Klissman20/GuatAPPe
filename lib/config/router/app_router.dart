@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:guatappe/infrastructure/models/marker_model.dart';
 import 'package:guatappe/presentation/screens/screens.dart';
 
 final appRouter = GoRouter(initialLocation: '/', routes: [
@@ -23,14 +22,6 @@ final appRouter = GoRouter(initialLocation: '/', routes: [
       path: '/map',
       pageBuilder: (context, state) =>
           transitionPage(state, const MapScreen())),
-  GoRoute(
-      name: DetailsScreen.name,
-      path: '/details',
-      builder: (context, state) {
-        MarkerModel marker = state.extra as MarkerModel;
-        return DetailsScreen(marker: marker);
-        //transitionPage(state, const DetailsScreen())
-      })
 ]);
 
 CustomTransitionPage<MaterialPage> transitionPage(

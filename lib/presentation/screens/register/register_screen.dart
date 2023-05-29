@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:guatappe/presentation/widgets/widgets.dart';
 import 'package:go_router/go_router.dart';
-import '../../../config/theme/app_theme.dart';
+import 'package:guatappe/config/theme/app_theme.dart';
 
 class RegisterScreen extends StatelessWidget {
   static const String name = 'register_screen';
@@ -13,17 +13,18 @@ class RegisterScreen extends StatelessWidget {
     final colorApp = AppTheme.colorApp;
 
     return Scaffold(
-        appBar: AppBar(
-          forceMaterialTransparency: true,
-          leading: BackButton(
-            color: Colors.white,
-            onPressed: () {
-              context.pop();
-            },
-          ),
+      appBar: AppBar(
+        forceMaterialTransparency: true,
+        leading: BackButton(
+          color: Colors.white,
+          onPressed: () {
+            context.pop();
+          },
         ),
-        body: _RegisterView(),
-        backgroundColor: colorApp,);
+      ),
+      body: _RegisterView(),
+      backgroundColor: colorApp,
+    );
   }
 }
 
