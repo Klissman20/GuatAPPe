@@ -76,7 +76,7 @@ class DetailsScreen extends StatelessWidget {
                       borderRadius: BorderRadius.only(
                           bottomLeft: Radius.circular(5),
                           bottomRight: Radius.circular(5)),
-                      child: marker.image,
+                      child: marker.image?[0] ?? Image.asset('name'),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(10.0),

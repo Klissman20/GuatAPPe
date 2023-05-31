@@ -11,7 +11,6 @@ import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:guatappe/config/constants/environment.dart';
 import 'package:guatappe/config/theme/app_theme.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:sliding_up_panel2/sliding_up_panel2.dart';
 
 class MapScreen extends ConsumerStatefulWidget {
@@ -27,7 +26,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   late String mapStyle;
   late BitmapDescriptor pinLocationIcon;
   late GoogleMapController mapController;
-  final Set<Marker> _markers = {};
+  Set<Marker> _markers = {};
   late List<MarkerEntity> markers;
   late LatLng initialMapCenter;
   late MarkerEntity selectedMarker = markers[0];
@@ -38,7 +37,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   late PolylinePoints polylinePoints = PolylinePoints();
   List<LatLng> polylineCoordinates = [];
   Map<PolylineId, Polyline> polylines = {};
-  late PointLatLng myLocation;
 
 // Slide Up Panel
   late final ScrollController scrollController;
@@ -47,6 +45,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
 
   @override
   void initState() {
+    ref.read(userCurrentLocationProvider.notifier).getUserCurrentLocation();
     markers = ref.read(markersListProvider);
     initialMapCenter = ref.read(initialCenterProvider);
     rootBundle.loadString('assets/map_style.json').then((string) {
@@ -72,6 +71,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   Future<void> onMapCreated(GoogleMapController controller) async {
     mapController = controller;
     controller.setMapStyle(mapStyle);
+
     for (final marker in markers) {
       _markers.add(Marker(
           markerId: MarkerId(marker.name),
@@ -92,7 +92,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           },
           icon: pinLocationIcon));
     }
-    getUserCurrentLocation();
     setState(() {});
     Timer(
         const Duration(milliseconds: 1500),
@@ -104,31 +103,10 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                 bearing: 110))));
   }
 
-  // getting user current location
-  Future<void> getUserCurrentLocation() async {
-    await Geolocator.requestPermission()
-        .then((value) {})
-        .onError((error, stackTrace) async {
-      await Geolocator.requestPermission();
-      print("ERROR" + error.toString());
-    });
-    await Geolocator.getCurrentPosition().then((position) {
-      myLocation = PointLatLng(position.latitude, position.longitude);
-      if (_markers.contains(Marker(markerId: MarkerId('MyLocation')))) {
-        _markers.remove(Marker(markerId: MarkerId('MyLocation')));
-      }
-      _markers.add(Marker(
-          icon:
-              BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange),
-          markerId: MarkerId('MyLocation'),
-          position: LatLng(position.latitude, position.longitude)));
-
-      setState(() {});
-    });
-  }
-
 // Drawing route goto point on map
   Future<void> getPolyline(MarkerEntity marker) async {
+    ref.read(userCurrentLocationProvider.notifier).getUserCurrentLocation();
+    final myLocation = ref.read(userCurrentLocationProvider);
     PointLatLng destination =
         PointLatLng(marker.position.latitude, marker.position.longitude);
     PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
@@ -204,7 +182,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                           padding: const EdgeInsets.symmetric(horizontal: 8.0),
                           child: ClipRRect(
                             borderRadius: BorderRadius.all(Radius.circular(8)),
-                            child: selectedMarker.image[0],
+                            child: selectedMarker.image?[0],
                           ),
                         ),
                         Padding(

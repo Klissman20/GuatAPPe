@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../../domain/entities/marker_entity.dart';
 
-final markersListProvider = Provider<List<MarkerEntity>>((ref) {
+final markersListProvider = StateProvider<List<MarkerEntity>>((ref) {
   final String lorem =
       '''Nulla ullamco consectetur sunt consequat do minim excepteur proident et mollit esse incididunt commodo. Magna in sit dolor velit incididunt eu nostrud duis dolore id velit ut. Consequat exercitation commodo exercitation duis eu exercitation laboris excepteur. Do adipisicing eu mollit commodo commodo ad quis.
           Eu aute tempor aliqua sit elit nostrud ex exercitation dolore id eu sunt quis. Tempor minim laborum consequat esse occaecat exercitation magna. Amet qui officia officia eu commodo. Dolore id ut nostrud veniam eiusmod anim.
@@ -216,7 +218,67 @@ final markersListProvider = Provider<List<MarkerEntity>>((ref) {
   return markers;
 });
 
+final markerSetProvider = StateProvider<Set<Marker>>((ref) {
+  final markers = ref.watch(markersListProvider);
+  Set<Marker> _markers = {};
+  for (final marker in markers) {
+    _markers.add(Marker(
+        markerId: MarkerId(marker.name),
+        position: marker.position,
+        infoWindow: InfoWindow(
+          title: marker.name,
+          onTap: () {
+            //panelController.open();
+          },
+        ),
+        onTap: () {
+          // if (selectedMarker == marker)
+          //   panelController.open();
+          // else
+          //   setState(() {
+          //     selectedMarker = marker;
+          //   });
+        },
+        icon: BitmapDescriptor.defaultMarker));
+  }
+  return _markers;
+});
+
 final initialCenterProvider = Provider((ref) {
   final LatLng initialMapCenter = const LatLng(6.233, -75.158);
   return initialMapCenter;
 });
+
+final userCurrentLocationProvider =
+    StateNotifierProvider<UserLocationNotifier, PointLatLng>((ref) {
+  final markers = ref.watch(markersListProvider);
+  return UserLocationNotifier(markers);
+});
+
+class UserLocationNotifier extends StateNotifier<PointLatLng> {
+  final List<MarkerEntity> markers;
+  UserLocationNotifier(this.markers) : super(PointLatLng(0, 0));
+
+  Future<void> getUserCurrentLocation() async {
+    await Geolocator.requestPermission()
+        .then((value) {})
+        .onError((error, stackTrace) async {
+      await Geolocator.requestPermission();
+      print("ERROR" + error.toString());
+    });
+    await Geolocator.getCurrentPosition().then((position) {
+      final newState = PointLatLng(position.latitude, position.longitude);
+
+      if (markers.contains(Marker(markerId: MarkerId('MyLocation')))) {
+        markers.remove(Marker(markerId: MarkerId('MyLocation')));
+      }
+      markers.add(MarkerEntity(
+          position: LatLng(position.latitude, position.longitude),
+          id: markers.length + 1,
+          name: 'myLocation',
+          description: 'myLoc'));
+
+      state = newState;
+    });
+  }
+}
