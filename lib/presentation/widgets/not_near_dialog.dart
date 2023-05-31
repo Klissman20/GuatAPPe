@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:guatappe/config/theme/app_theme.dart';
-import 'package:guatappe/infrastructure/models/marker_model.dart';
+import 'package:guatappe/domain/entities/marker_entity.dart';
 
 class NotNearDialog extends StatelessWidget {
-  final MarkerModel marker;
+  final MarkerEntity marker;
   final VoidCallback? onPressed;
 
   const NotNearDialog({

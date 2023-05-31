@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:guatappe/domain/entities/marker_entity.dart';
+import 'package:guatappe/presentation/providers/google_map_provider.dart';
 import 'package:guatappe/presentation/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
@@ -8,25 +11,26 @@ import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:guatappe/config/constants/environment.dart';
 import 'package:guatappe/config/theme/app_theme.dart';
-import 'package:guatappe/infrastructure/models/marker_model.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:sliding_up_panel2/sliding_up_panel2.dart';
 
-class MapScreen extends StatefulWidget {
+class MapScreen extends ConsumerStatefulWidget {
   static const String name = 'map_screen';
   const MapScreen({super.key});
 
   @override
-  State<MapScreen> createState() => _MapScreenState();
+  _MapScreenState createState() => _MapScreenState();
 }
 
-class _MapScreenState extends State<MapScreen> {
+class _MapScreenState extends ConsumerState<MapScreen> {
 // Google Maps & Markers
   late String mapStyle;
   late BitmapDescriptor pinLocationIcon;
   late GoogleMapController mapController;
   final Set<Marker> _markers = {};
-  late MarkerModel selectedMarker = markers[0];
+  late List<MarkerEntity> markers;
+  late LatLng initialMapCenter;
+  late MarkerEntity selectedMarker = markers[0];
   String googleAPiKey = Environment.googleMapApiKey;
   final GlobalKey<ScaffoldState> key = GlobalKey();
 
@@ -40,6 +44,19 @@ class _MapScreenState extends State<MapScreen> {
   late final ScrollController scrollController;
   late final PanelController panelController;
   bool isPanelClosed = true;
+
+  @override
+  void initState() {
+    markers = ref.read(markersListProvider);
+    initialMapCenter = ref.read(initialCenterProvider);
+    rootBundle.loadString('assets/map_style.json').then((string) {
+      mapStyle = string;
+    });
+    setCustomMapPin();
+    scrollController = ScrollController();
+    panelController = PanelController();
+    super.initState();
+  }
 
   void setCustomMapPin() async {
     if (Platform.isIOS) {
@@ -111,7 +128,7 @@ class _MapScreenState extends State<MapScreen> {
   }
 
 // Drawing route goto point on map
-  Future<void> getPolyline(MarkerModel marker) async {
+  Future<void> getPolyline(MarkerEntity marker) async {
     PointLatLng destination =
         PointLatLng(marker.position.latitude, marker.position.longitude);
     PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
@@ -187,7 +204,7 @@ class _MapScreenState extends State<MapScreen> {
                           padding: const EdgeInsets.symmetric(horizontal: 8.0),
                           child: ClipRRect(
                             borderRadius: BorderRadius.all(Radius.circular(8)),
-                            child: selectedMarker.image,
+                            child: selectedMarker.image[0],
                           ),
                         ),
                         Padding(
@@ -218,17 +235,6 @@ class _MapScreenState extends State<MapScreen> {
                     const SizedBox(height: 50),
                   ])),
         ));
-  }
-
-  @override
-  void initState() {
-    rootBundle.loadString('assets/map_style.json').then((string) {
-      mapStyle = string;
-    });
-    setCustomMapPin();
-    scrollController = ScrollController();
-    panelController = PanelController();
-    super.initState();
   }
 
   final BorderRadius _borderRadius = const BorderRadius.only(
@@ -293,6 +299,7 @@ class _MapScreenState extends State<MapScreen> {
               width: 0.6,
               buttonText: 'Activar AR',
               onTap: () {
+                //TODO: show dialog or Unity logic
                 showGeneralDialog(
                     context: context,
                     barrierDismissible: true,
