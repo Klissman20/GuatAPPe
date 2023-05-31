@@ -3,3 +3,7 @@ export 'package:guatappe/presentation/widgets/not_near_dialog.dart';
 export 'package:guatappe/presentation/widgets/info_popup.dart';
 export 'package:guatappe/presentation/widgets/login/password_field_box.dart';
 export 'package:guatappe/presentation/widgets/login/text_field_box.dart';
+
+export 'map/footer_widget.dart';
+export 'map/header_widget.dart';
+export 'map/panel_widget.dart';
