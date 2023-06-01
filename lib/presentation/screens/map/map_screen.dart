@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:guatappe/domain/entities/marker_entity.dart';
 import 'package:guatappe/presentation/providers/google_map_provider.dart';
 import 'package:guatappe/presentation/widgets/widgets.dart';
@@ -41,6 +43,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   late final ScrollController scrollController;
   late final PanelController panelController;
   bool isPanelClosed = true;
+  String distance = '';
 
   @override
   void initState() {
@@ -93,13 +96,21 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     }
     setState(() {});
     Timer(
-        const Duration(milliseconds: 1500),
+        const Duration(milliseconds: 800),
         () => mapController.animateCamera(CameraUpdate.newCameraPosition(
             CameraPosition(
                 target: initialMapCenter,
                 zoom: 16.5,
                 tilt: 70.0,
                 bearing: 110))));
+  }
+
+  double calculateDistance(lat1, lon1, lat2, lon2) {
+    var p = 0.017453292519943295;
+    var a = 0.5 -
+        cos((lat2 - lat1) * p) / 2 +
+        cos(lat1 * p) * cos(lat2 * p) * (1 - cos((lon2 - lon1) * p)) / 2;
+    return 12742 * asin(sqrt(a));
   }
 
 // Drawing route goto point on map
@@ -130,14 +141,27 @@ class _MapScreenState extends ConsumerState<MapScreen> {
         if (point.longitude > maxLong) maxLong = point.longitude;
       }
     }
+    double totalDistance = 0;
+    for (var i = 0; i < polylineCoordinates.length - 1; i++) {
+      totalDistance += calculateDistance(
+          polylineCoordinates[i].latitude,
+          polylineCoordinates[i].longitude,
+          polylineCoordinates[i + 1].latitude,
+          polylineCoordinates[i + 1].longitude);
+    }
+    distance = totalDistance < 1
+        ? (totalDistance * 1000).round().toString() + ' mts.'
+        : totalDistance.toStringAsFixed(2) + ' Kms.';
+    LatLngBounds bounds = LatLngBounds(
+        southwest: LatLng(minLat, minLong), northeast: LatLng(maxLat, maxLong));
+    CameraUpdate cameraUpdate = CameraUpdate.newLatLngBounds(bounds, 50);
     PolylineId id = const PolylineId("poly");
     Polyline polyline = Polyline(
       consumeTapEvents: true,
-      onTap: () => mapController.animateCamera(CameraUpdate.newLatLngBounds(
-          LatLngBounds(
-              southwest: LatLng(minLat, minLong),
-              northeast: LatLng(maxLat, maxLong)),
-          50)),
+      onTap: () {
+        mapController.animateCamera(cameraUpdate);
+        mapController.showMarkerInfoWindow(MarkerId('Distance'));
+      },
       polylineId: id,
       color: AppTheme.colorApp,
       width: 8,
@@ -146,14 +170,21 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       points: polylineCoordinates,
     );
     polylines[id] = polyline;
-
-    mapController.animateCamera(CameraUpdate.newLatLngBounds(
-        LatLngBounds(
-            southwest: LatLng(minLat, minLong),
-            northeast: LatLng(maxLat, maxLong)),
-        50));
-
+    mapController.animateCamera(cameraUpdate);
+    _markers.add(Marker(
+        markerId: MarkerId('Distance'),
+        alpha: 0,
+        infoWindow: InfoWindow(
+            title: 'Distancia: $distance',
+            anchor: Offset(0.5, 0.9),
+            onTap: () {
+              panelController.open();
+            }),
+        position:
+            polylineCoordinates[(polylineCoordinates.length / 2).floor()]));
     setState(() {});
+    Timer(Duration(milliseconds: 150),
+        () => mapController.showMarkerInfoWindow(MarkerId('Distance')));
   }
 
   @override
@@ -273,7 +304,6 @@ class _PositionedPanel extends StatelessWidget {
 
 class _CloseFloatingButton extends StatelessWidget {
   const _CloseFloatingButton({
-    super.key,
     required this.panelController,
     required this.isPanelClosed,
   });
@@ -315,6 +345,32 @@ class _Drawer extends StatelessWidget {
             style: TextStyle(decoration: TextDecoration.underline),
           ),
           currentAccountPicture: Image.asset('assets/logo/logo_guatappe.png'),
+        ),
+        ExpansionTile(
+          childrenPadding: EdgeInsets.only(left: 16),
+          leading: Icon(Icons.route),
+          title: Text("Explorar Rutas"),
+          children: [
+            ListTile(
+              onTap: () {
+                context.pop();
+              },
+              leading: Icon(Icons.emoji_nature_outlined),
+              title: Text('Naturaleza'),
+            ),
+            ListTile(
+              leading: Icon(Icons.meeting_room_outlined),
+              title: Text('Historia'),
+            ),
+            ListTile(
+              leading: Icon(Icons.keyboard_command_key_sharp),
+              title: Text('Cultura'),
+            ),
+            ListTile(
+              leading: Icon(Icons.sports_handball_sharp),
+              title: Text('Diversión'),
+            )
+          ],
         ),
         ListTile(
           leading: Icon(Icons.account_box),
