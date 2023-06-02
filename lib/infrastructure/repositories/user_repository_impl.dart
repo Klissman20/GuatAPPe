@@ -1,4 +1,5 @@
 import 'package:guatappe/domain/datasources/users_datasource.dart';
+import 'package:guatappe/domain/entities/user_entity.dart';
 import 'package:guatappe/domain/repositories/users_repository.dart';
 import 'package:guatappe/infrastructure/models/user_model.dart';
 
@@ -8,7 +9,7 @@ class UserRepositoryImpl extends UsersRepository {
   UserRepositoryImpl(this.dataSource);
 
   @override
-  Future<UserModel> getUserById(String id) {
+  Future<UserEntity> getUserById(String id) {
     return dataSource.getUserById(id);
   }
 

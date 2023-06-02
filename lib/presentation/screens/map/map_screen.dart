@@ -4,7 +4,7 @@ import 'dart:math';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:guatappe/domain/entities/marker_entity.dart';
-import 'package:guatappe/infrastructure/models/user_model.dart';
+import 'package:guatappe/domain/entities/user_entity.dart';
 import 'package:guatappe/presentation/providers/providers.dart';
 import 'package:guatappe/presentation/screens/screens.dart';
 import 'package:guatappe/presentation/widgets/widgets.dart';
@@ -62,7 +62,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     super.initState();
   }
 
-  UserModel? userData;
+  UserEntity? userData;
 
   void getUserData() async {
     userData = await ref.read(userDataProvider);
@@ -340,7 +340,7 @@ class _CloseFloatingButton extends StatelessWidget {
 }
 
 class _Drawer extends ConsumerWidget {
-  final UserModel? userData;
+  final UserEntity? userData;
   const _Drawer(this.userData);
 
   @override
