@@ -5,9 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:guatappe/domain/entities/marker_entity.dart';
 import 'package:guatappe/infrastructure/models/user_model.dart';
-import 'package:guatappe/presentation/providers/auth_repository_provider.dart';
-import 'package:guatappe/presentation/providers/google_map_provider.dart';
-import 'package:guatappe/presentation/providers/user_provider.dart';
+import 'package:guatappe/presentation/providers/providers.dart';
 import 'package:guatappe/presentation/screens/screens.dart';
 import 'package:guatappe/presentation/widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -68,6 +66,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
 
   void getUserData() async {
     userData = await ref.read(userDataProvider);
+    setState(() {});
   }
 
   void setCustomMapPin() async {
