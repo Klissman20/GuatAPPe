@@ -3,6 +3,7 @@ import 'package:guatappe/infrastructure/models/user_model.dart';
 
 class UserMapper {
   static UserEntity movieDBToEntity(UserModel userfb) => UserEntity(
+      id: userfb.id,
       name: userfb.name,
       lastName: userfb.lastName,
       email: userfb.email,

@@ -1,4 +1,5 @@
 class UserEntity {
+  final String id;
   final String name;
   final String lastName;
   final String email;
@@ -7,7 +8,8 @@ class UserEntity {
   final int phone;
 
   UserEntity(
-      {required this.name,
+      {required this.id,
+      required this.name,
       required this.lastName,
       required this.email,
       required this.gender,
