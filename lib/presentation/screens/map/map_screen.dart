@@ -4,7 +4,11 @@ import 'dart:math';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:guatappe/domain/entities/marker_entity.dart';
+import 'package:guatappe/infrastructure/models/user_model.dart';
+import 'package:guatappe/presentation/providers/auth_repository_provider.dart';
 import 'package:guatappe/presentation/providers/google_map_provider.dart';
+import 'package:guatappe/presentation/providers/user_provider.dart';
+import 'package:guatappe/presentation/screens/screens.dart';
 import 'package:guatappe/presentation/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
@@ -56,7 +60,14 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     setCustomMapPin();
     scrollController = ScrollController();
     panelController = PanelController();
+    getUserData();
     super.initState();
+  }
+
+  UserModel? userData;
+
+  void getUserData() async {
+    userData = await ref.read(userDataProvider);
   }
 
   void setCustomMapPin() async {
@@ -73,7 +84,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   Future<void> onMapCreated(GoogleMapController controller) async {
     mapController = controller;
     controller.setMapStyle(mapStyle);
-
     for (final marker in markers) {
       _markers.add(Marker(
           markerId: MarkerId(marker.name),
@@ -253,7 +263,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           ),
         ),
       ),
-      endDrawer: _Drawer(),
+      endDrawer: _Drawer(userData),
       floatingActionButtonLocation: FloatingActionButtonLocation.miniCenterTop,
       floatingActionButton: _MenuFloatingButton(),
     );
@@ -330,18 +340,19 @@ class _CloseFloatingButton extends StatelessWidget {
   }
 }
 
-class _Drawer extends StatelessWidget {
-  const _Drawer();
+class _Drawer extends ConsumerWidget {
+  final UserModel? userData;
+  const _Drawer(this.userData);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Drawer(
         child: ListView(
       children: [
         UserAccountsDrawerHeader(
-          accountName: Text('David Román'),
+          accountName: Text('${userData?.name} ${userData?.lastName}'),
           accountEmail: Text(
-            'roman.david@gmail.com',
+            '${userData?.email}',
             style: TextStyle(decoration: TextDecoration.underline),
           ),
           currentAccountPicture: Image.asset('assets/logo/logo_guatappe.png'),
@@ -383,6 +394,10 @@ class _Drawer extends StatelessWidget {
         ListTile(
           leading: Icon(Icons.logout),
           title: Text('Salir'),
+          onTap: () async {
+            await ref.read(authRepositoryProvider).signOut();
+            context.goNamed(LoginScreen.name);
+          },
         ),
       ],
     ));

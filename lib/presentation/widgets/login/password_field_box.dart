@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class PasswordFieldBox extends StatefulWidget {
-  const PasswordFieldBox({super.key});
+  final TextEditingController controller;
+  final void Function(String)? onChanged;
+  const PasswordFieldBox({super.key, required this.controller, this.onChanged});
 
   @override
   State<PasswordFieldBox> createState() => _PasswordFieldBoxState();
@@ -46,15 +48,17 @@ class _PasswordFieldBoxState extends State<PasswordFieldBox> {
     );
 
     return TextFormField(
-        obscureText: !_passwordVisible,
-        autocorrect: false,
-        enableSuggestions: false,
-        cursorColor: Colors.white54,
-        keyboardAppearance: Brightness.light,
-        keyboardType: TextInputType.visiblePassword,
-        textInputAction: TextInputAction.done,
-        style: textStyle,
-        decoration: inputDecoration,
-        onFieldSubmitted: (value) {});
+      controller: widget.controller,
+      obscureText: !_passwordVisible,
+      autocorrect: false,
+      enableSuggestions: false,
+      cursorColor: Colors.white54,
+      keyboardAppearance: Brightness.light,
+      keyboardType: TextInputType.visiblePassword,
+      textInputAction: TextInputAction.done,
+      style: textStyle,
+      decoration: inputDecoration,
+      onChanged: widget.onChanged,
+    );
   }
 }

@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 
 class TextFieldBox extends StatelessWidget {
+  final TextEditingController controller;
   final String typeText;
-  const TextFieldBox({super.key, required this.typeText});
+  final void Function(String)? onChanged;
+  const TextFieldBox(
+      {super.key,
+      required this.typeText,
+      required this.controller,
+      this.onChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -22,17 +28,19 @@ class TextFieldBox extends StatelessWidget {
         focusedErrorBorder: InputBorder.none);
 
     return TextFormField(
-        autocorrect: false,
-        enableSuggestions: false,
-        cursorColor: Colors.white54,
-        keyboardAppearance: Brightness.light,
-        keyboardType: (typeText == 'Email')
-            ? TextInputType.emailAddress
-            : (typeText == 'Phone Number')
-                ? TextInputType.number
-                : TextInputType.text,
-        style: textStyle,
-        decoration: inputDecoration,
-        onFieldSubmitted: (value) {});
+      controller: controller,
+      autocorrect: false,
+      enableSuggestions: false,
+      cursorColor: Colors.white54,
+      keyboardAppearance: Brightness.light,
+      keyboardType: (typeText == 'Email')
+          ? TextInputType.emailAddress
+          : (typeText == 'Phone Number')
+              ? TextInputType.number
+              : TextInputType.text,
+      style: textStyle,
+      decoration: inputDecoration,
+      onChanged: onChanged,
+    );
   }
 }
