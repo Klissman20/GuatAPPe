@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:guatappe/config/theme/app_theme.dart';
 import 'package:guatappe/presentation/providers/auth_repository_provider.dart';
-import '../../../config/theme/app_theme.dart';
-import '../../widgets/login/password_field_box.dart';
-import '../../widgets/login/text_field_box.dart';
-import '../../screens/screens.dart';
+import 'package:guatappe/presentation/widgets/login/password_field_box.dart';
+import 'package:guatappe/presentation/widgets/login/text_field_box.dart';
+import 'package:guatappe/presentation/screens/screens.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   static const String name = 'login_screen';
@@ -129,7 +129,7 @@ class _LogInButton extends ConsumerWidget {
               context: context,
               builder: (ctx) => AlertDialog(
                 title: const Text('Ups!'),
-                content: Text(response['error'].toString()),
+                content: Text(removeFirstWord(response['error'].toString())),
                 actions: [
                   TextButton(
                       onPressed: () {
