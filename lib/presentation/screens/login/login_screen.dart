@@ -180,7 +180,7 @@ class _GoogleButton extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              'Acceder con google',
+              'Acceder con Google',
               style: textStyleBtn,
             ),
             SizedBox(

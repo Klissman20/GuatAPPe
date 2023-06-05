@@ -12,7 +12,7 @@ class SplashScreenAnimated extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final authState = ref.watch(authStateProvider) != null;
+    final authState = ref.watch(authStateProvider).value != null;
     return AnimatedSplashScreen(
         splash: Lottie.asset('assets/logo/logo_animado1.json'),
         nextScreen: authState ? MapScreen() : LoginScreen(),

@@ -10,7 +10,7 @@ class UserDataSourceImpl extends UsersDataSource {
   UserDataSourceImpl(this.firebaseFirestore);
 
   @override
-  Future<UserEntity> getUserById(String id) async {
+  Future<UserEntity> getUserById(String? id) async {
     final userFirestore =
         await firebaseFirestore.collection('users').doc(id).get();
     if (userFirestore.exists) {
