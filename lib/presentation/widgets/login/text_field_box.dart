@@ -16,7 +16,7 @@ class TextFieldBox extends StatelessWidget {
 
     final outlineInputBorder = OutlineInputBorder(
         borderSide: const BorderSide(color: Colors.white54),
-        borderRadius: BorderRadius.circular(20));
+        borderRadius: BorderRadius.circular(10));
 
     final inputDecoration = InputDecoration(
         labelText: typeText,

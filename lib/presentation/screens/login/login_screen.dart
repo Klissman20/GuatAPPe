@@ -150,7 +150,7 @@ class _LogInButton extends ConsumerWidget {
           style: ButtonStyle(
               shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                   RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20.0),
+                      borderRadius: BorderRadius.circular(10.0),
                       side: const BorderSide(color: Colors.transparent)))),
           child: Text(
             'Iniciar sesión',
