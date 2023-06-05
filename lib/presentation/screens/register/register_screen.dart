@@ -18,15 +18,6 @@ class RegisterScreen extends StatelessWidget {
     final colorApp = AppTheme.colorApp;
 
     return Scaffold(
-      appBar: AppBar(
-        forceMaterialTransparency: true,
-        leading: BackButton(
-          color: Colors.white,
-          onPressed: () {
-            context.pop();
-          },
-        ),
-      ),
       body: _RegisterView(),
       backgroundColor: colorApp,
     );
@@ -76,19 +67,24 @@ class _RegisterViewState extends ConsumerState<_RegisterView> {
 
     return Center(
       child: SafeArea(
-          child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 30),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                child: Image.asset(
-                  'assets/logo/logo_guatappe.png',
-                  height: 100,
-                ),
-              ),
+          child: CustomScrollView(slivers: [
+        SliverAppBar(
+          pinned: true,
+          backgroundColor: AppTheme.colorApp,
+          expandedHeight: 145,
+          flexibleSpace: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            child: Image.asset(
+              'assets/logo/logo_guatappe.png',
+              height: 130,
+            ),
+          ),
+        ),
+        SliverList(
+            delegate: SliverChildListDelegate([
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 35.0, vertical: 10),
+            child: Column(children: [
               TextFieldBox(
                 controller: controllerName,
                 typeText: 'Name',
@@ -101,9 +97,25 @@ class _RegisterViewState extends ConsumerState<_RegisterView> {
               const SizedBox(
                 height: 20,
               ),
-              TextFieldBox(
+              // Probando validacion
+              TextField(
+                style: TextStyle(color: Colors.white),
                 controller: controllerLastName,
-                typeText: 'LastName',
+                decoration: InputDecoration(
+                    labelText: 'LastName',
+                    errorStyle: TextStyle(
+                        fontSize: 13.5,
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromARGB(246, 243, 193, 11)),
+                    errorText: controllerLastName.value.text.isEmpty
+                        ? 'No puede estar vacio' //Mensaje error
+                        : null,
+                    border: OutlineInputBorder(
+                        borderSide: BorderSide(width: 3),
+                        borderRadius: BorderRadius.circular(20)),
+                    fillColor: Colors.black.withOpacity(0.1),
+                    filled: true,
+                    labelStyle: TextStyle(color: Colors.white)),
                 onChanged: (value) {
                   setState(() {
                     inputLastname = controllerLastName.text;
@@ -185,10 +197,10 @@ class _RegisterViewState extends ConsumerState<_RegisterView> {
               const SizedBox(
                 height: 20,
               ),
-            ],
-          ),
-        ),
-      )),
+            ]),
+          )
+        ]))
+      ])),
     );
   }
 }
@@ -235,16 +247,16 @@ class _RegisterButton extends ConsumerWidget {
           final response = await ref
               .read(authRepositoryProvider)
               .signUp(email: email, password: password);
-          final newUser = UserModel(
-              id: response['uid'],
-              name: name,
-              lastName: lastName,
-              email: email,
-              gender: gender,
-              country: country,
-              phone: phone);
-          await ref.read(userRepositoryProvider).createUser(newUser);
           if (response['state'] == 'ok') {
+            final newUser = UserModel(
+                id: response['uid'],
+                name: name,
+                lastName: lastName,
+                email: email,
+                gender: gender,
+                country: country,
+                phone: phone);
+            await ref.read(userRepositoryProvider).createUser(newUser);
             return await showDialog(
                 context: context,
                 builder: (ctx) => AlertDialog(
@@ -264,7 +276,7 @@ class _RegisterButton extends ConsumerWidget {
             context: context,
             builder: (ctx) => AlertDialog(
               title: const Text('Ups!'),
-              content: Text(response['error'].toString()),
+              content: Text(removeFirstWord(response['error'].toString())),
               actions: [
                 TextButton(
                     onPressed: () {
@@ -278,4 +290,13 @@ class _RegisterButton extends ConsumerWidget {
       ),
     );
   }
+}
+
+String removeFirstWord(String input) {
+  List<String> words = input.split(' ');
+  if (words.length <= 1) {
+    return '';
+  }
+  words.removeAt(0);
+  return words.join(' ');
 }

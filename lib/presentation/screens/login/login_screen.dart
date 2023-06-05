@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:guatappe/infrastructure/models/user_model.dart';
 import 'package:guatappe/presentation/providers/auth_repository_provider.dart';
 import 'package:guatappe/presentation/providers/user_repository_provider.dart';
@@ -9,6 +8,7 @@ import '../../../config/theme/app_theme.dart';
 import '../../widgets/login/password_field_box.dart';
 import '../../widgets/login/text_field_box.dart';
 import '../../screens/screens.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   static const String name = 'login_screen';
@@ -136,7 +136,7 @@ class _LogInButton extends ConsumerWidget {
               context: context,
               builder: (ctx) => AlertDialog(
                 title: const Text('Ups!'),
-                content: Text(response['error'].toString()),
+                content: Text(removeFirstWord(response['error'].toString())),
                 actions: [
                   TextButton(
                       onPressed: () {
