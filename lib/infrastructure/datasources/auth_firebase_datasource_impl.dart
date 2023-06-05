@@ -1,4 +1,8 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:guatappe/config/helpers/firebase_options.dart';
 import 'package:guatappe/domain/datasources/auth_firebase_datasource.dart';
 
 class AuthFirebaseDataSourceImpl extends AuthFirebaseDataSource {
@@ -41,25 +45,39 @@ class AuthFirebaseDataSourceImpl extends AuthFirebaseDataSource {
     await _firebaseAuth.signOut();
   }
 
-  // Future<Either<String, User>> continueWithGoogle() async {
-  //   try {
-  //     final googleSignIn =
-  //         GoogleSignIn(clientId: DefaultFirebaseOptions.ios.iosClientId);
-  //     final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
-  //     if (googleUser != null) {
-  //       final GoogleSignInAuthentication googleAuth =
-  //           await googleUser.authentication;
-  //       final AuthCredential credential = GoogleAuthProvider.credential(
-  //         accessToken: googleAuth.accessToken,
-  //         idToken: googleAuth.idToken,
-  //       );
-  //       final response = await _firebaseAuth.signInWithCredential(credential);
-  //       return right(response.user!);
-  //     } else {
-  //       return left('Unknown Error');
-  //     }
-  //   } on FirebaseAuthException catch (e) {
-  //     return left(e.message ?? 'Unknow Error');
-  //   }
-  // }
+  Future<Map<String, dynamic>> continueWithGoogle() async {
+    try {
+      GoogleSignIn googleSignIn;
+
+      if (Platform.isIOS)
+        googleSignIn = GoogleSignIn(
+            clientId: DefaultFirebaseOptions.currentPlatform.iosClientId);
+
+      googleSignIn = GoogleSignIn(
+          clientId: DefaultFirebaseOptions.currentPlatform.iosClientId);
+
+      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+      if (googleUser != null) {
+        final GoogleSignInAuthentication googleAuth =
+            await googleUser.authentication;
+        final AuthCredential credential = GoogleAuthProvider.credential(
+          accessToken: googleAuth.accessToken,
+          idToken: googleAuth.idToken,
+        );
+        final response = await _firebaseAuth.signInWithCredential(credential);
+        final _user = response.user;
+        assert(_user?.isAnonymous == false);
+        assert(await _user?.getIdToken() != null);
+        return {
+          'user': (googleUser),
+          'state': 'ok',
+          'uid': (response.user!.uid)
+        };
+      } else {
+        return {'user': null, 'state': 'failed', 'error': 'unknow'};
+      }
+    } on FirebaseAuthException catch (e) {
+      return {'user': null, 'state': 'failed', 'error': e};
+    }
+  }
 }

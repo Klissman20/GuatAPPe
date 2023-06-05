@@ -22,4 +22,9 @@ class AuthFirebaseRepositoryImpl extends AuthFirebaseRepository {
   Future<void> signOut() {
     return datasource.signOut();
   }
+
+  @override
+  Future<Map<String, dynamic>> continueWithGoogle() {
+    return datasource.continueWithGoogle();
+  }
 }

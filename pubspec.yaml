@@ -22,6 +22,7 @@ dependencies:
   geolocator: ^9.0.2
   go_router: ^7.0.0
   google_maps_flutter: ^2.2.6
+  google_sign_in: ^6.1.3
   lottie: ^2.3.2
   sliding_up_panel2: ^3.3.0+1
 
@@ -42,6 +43,7 @@ flutter:
     - assets/images/plazoleta.png
     - assets/icono.png
     - assets/map_style.json
+    - assets/google-logo.png
 
   fonts:
     - family: Roboto

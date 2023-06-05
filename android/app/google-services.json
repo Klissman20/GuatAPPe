@@ -14,7 +14,15 @@
       },
       "oauth_client": [
         {
-          "client_id": "30362615042-qsvf4af51kd36um07rrgqcgrbkscklsk.apps.googleusercontent.com",
+          "client_id": "30362615042-6u63d8uehatkf0u3upqfbhp1brf59043.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.guatappe",
+            "certificate_hash": "a8705a28809960c194729a7b922da53c7ba7747f"
+          }
+        },
+        {
+          "client_id": "30362615042-f8f7t11s3k5f6hsl8v6n9cmpi2c3qhhg.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -27,7 +35,7 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "30362615042-qsvf4af51kd36um07rrgqcgrbkscklsk.apps.googleusercontent.com",
+              "client_id": "30362615042-f8f7t11s3k5f6hsl8v6n9cmpi2c3qhhg.apps.googleusercontent.com",
               "client_type": 3
             },
             {

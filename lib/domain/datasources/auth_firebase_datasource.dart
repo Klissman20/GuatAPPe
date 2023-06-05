@@ -6,4 +6,6 @@ abstract class AuthFirebaseDataSource {
       {required String email, required String password});
 
   Future<void> signOut();
+
+  Future<Map<String, dynamic>> continueWithGoogle();
 }

@@ -16,7 +16,7 @@ class UserDataSourceImpl extends UsersDataSource {
     if (userFirestore.exists) {
       final userData = userFirestore.data();
       final user = UserModel.fromJson(userData!);
-      return UserMapper.movieDBToEntity(user);
+      return UserMapper.userFirebaseToEntity(user);
     }
     throw UnimplementedError();
   }

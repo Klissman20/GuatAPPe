@@ -63,6 +63,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '30362615042',
     projectId: 'guatappe-com',
     storageBucket: 'guatappe-com.appspot.com',
+    androidClientId: '30362615042-6u63d8uehatkf0u3upqfbhp1brf59043.apps.googleusercontent.com',
     iosClientId: '30362615042-kag0pr7qkflf4ejn2t0olmmass02hiqv.apps.googleusercontent.com',
     iosBundleId: 'com.example.guatappe',
   );

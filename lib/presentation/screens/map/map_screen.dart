@@ -46,6 +46,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   late final PanelController panelController;
   bool isPanelClosed = true;
   String distance = '';
+  UserEntity? userData;
 
   @override
   void initState() {
@@ -61,8 +62,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     getUserData();
     super.initState();
   }
-
-  UserEntity? userData;
 
   void getUserData() async {
     userData = await ref.read(userDataProvider);

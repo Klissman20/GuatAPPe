@@ -1,7 +1,7 @@
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:guatappe/presentation/providers/authenticacion_provider.dart';
+import 'package:guatappe/presentation/providers/auth_provider.dart';
 import 'package:guatappe/presentation/screens/screens.dart';
 import '../../../config/theme/app_theme.dart';
 import 'package:lottie/lottie.dart';

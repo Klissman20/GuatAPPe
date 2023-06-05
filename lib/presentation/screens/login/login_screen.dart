@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:guatappe/infrastructure/models/user_model.dart';
 import 'package:guatappe/presentation/providers/auth_repository_provider.dart';
+import 'package:guatappe/presentation/providers/user_repository_provider.dart';
 import '../../../config/theme/app_theme.dart';
 import '../../widgets/login/password_field_box.dart';
 import '../../widgets/login/text_field_box.dart';
@@ -93,7 +96,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 18),
-                          ))
+                          )),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      _GoogleButton(),
                     ],
                   ),
                 ),
@@ -135,7 +142,7 @@ class _LogInButton extends ConsumerWidget {
                       onPressed: () {
                         Navigator.of(ctx).pop();
                       },
-                      child: const Text("OK"))
+                      child: const Text("Ok"))
                 ],
               ),
             );
@@ -149,6 +156,59 @@ class _LogInButton extends ConsumerWidget {
             'Iniciar sesión',
             style: textStyleBtn,
           )),
+    );
+  }
+}
+
+class _GoogleButton extends ConsumerWidget {
+  const _GoogleButton();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final TextStyle textStyleBtn = TextStyle(
+        color: AppTheme.colorApp, fontSize: 18, fontWeight: FontWeight.bold);
+
+    return SizedBox(
+      height: 40,
+      child: ElevatedButton(
+        style: ButtonStyle(
+            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5.0),
+                    side: const BorderSide(color: Colors.transparent)))),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'Acceder con google',
+              style: textStyleBtn,
+            ),
+            SizedBox(
+              width: 20,
+            ),
+            Image.asset(
+              'assets/google-logo.png',
+              fit: BoxFit.fitHeight,
+            )
+          ],
+        ),
+        onPressed: () async {
+          FocusScope.of(context).unfocus();
+          final response =
+              await ref.read(authRepositoryProvider).continueWithGoogle();
+          final GoogleSignInAccount googleUser = response['user'];
+          final newUser = UserModel(
+              id: response['uid'],
+              name: googleUser.displayName.toString(),
+              lastName: '',
+              email: googleUser.email,
+              gender: '',
+              country: '',
+              phone: 0);
+          await ref.read(userRepositoryProvider).createUser(newUser);
+          if (response['state'] == 'ok') return context.goNamed(MapScreen.name);
+        },
+      ),
     );
   }
 }
