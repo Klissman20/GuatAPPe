@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:guatappe/config/helpers/firebase_options.dart';
@@ -45,8 +47,14 @@ class AuthFirebaseDataSourceImpl extends AuthFirebaseDataSource {
 
   Future<Map<String, dynamic>> continueWithGoogle() async {
     try {
-      GoogleSignIn googleSignIn = GoogleSignIn(
-          clientId: DefaultFirebaseOptions.currentPlatform.iosClientId);
+      GoogleSignIn googleSignIn;
+      if (Platform.isAndroid) {
+        googleSignIn = GoogleSignIn(
+            clientId: DefaultFirebaseOptions.currentPlatform.androidClientId);
+      } else {
+        googleSignIn = GoogleSignIn(
+            clientId: DefaultFirebaseOptions.currentPlatform.iosClientId);
+      }
 
       final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
       if (googleUser != null) {
