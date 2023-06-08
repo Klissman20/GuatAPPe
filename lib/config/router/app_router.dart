@@ -22,11 +22,6 @@ final appRouter = GoRouter(initialLocation: '/', routes: [
       path: '/map',
       pageBuilder: (context, state) =>
           transitionPage(state, const MapScreen())),
-  GoRoute(
-      name: DetailsScreen.name,
-      path: '/details',
-      pageBuilder: (context, state) =>
-          transitionPage(state, const DetailsScreen()))
 ]);
 
 CustomTransitionPage<MaterialPage> transitionPage(
