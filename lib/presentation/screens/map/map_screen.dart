@@ -206,7 +206,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               SlidingUpPanel(
                 body: Container(
                   margin: EdgeInsets.only(
-                      bottom: size.height - size.height * 0.838),
+                      bottom: size.height - size.height * 0.8),
                   color: Colors.white,
                   child: GoogleMap(
                     myLocationEnabled: true,
@@ -234,7 +234,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                 borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(18.0),
                     topRight: Radius.circular(18.0)),
-                maxHeight: size.height * 0.85,
+                maxHeight: size.height * 0.84,
                 footer: Footer(
                     isPanelClosed: isPanelClosed,
                     getPolyline: getPolyline,

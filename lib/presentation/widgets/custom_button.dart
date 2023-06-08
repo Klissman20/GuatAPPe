@@ -16,13 +16,13 @@ class CustomButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Material(
-        elevation: 8.0,
+        elevation: 3.0,
         borderRadius: BorderRadius.circular(6.0),
         color: AppTheme.colorApp,
         child: InkWell(
           onTap: onTap,
           child: Container(
-            height: 40.0,
+            height: 38.0,
             width: MediaQuery.of(context).size.width * width,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8.0),
