@@ -206,7 +206,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               SlidingUpPanel(
                 body: Container(
                   margin: EdgeInsets.only(
-                      bottom: size.height - size.height * 0.835),
+                      bottom: size.height - size.height * 0.838),
                   color: Colors.white,
                   child: GoogleMap(
                     myLocationEnabled: true,
@@ -222,6 +222,8 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                 scrollController: scrollController,
                 header: Header(selectedMarker: selectedMarker),
                 backdropEnabled: true,
+                parallaxEnabled: true,
+                parallaxOffset: 0.45,
                 backdropOpacity: 0.4,
                 panelBuilder: () => Panel(
                   selectedMarker: selectedMarker,
@@ -238,20 +240,17 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                     getPolyline: getPolyline,
                     selectedMarker: selectedMarker,
                     panelController: panelController),
-                onPanelSlide: (double pos) {
-                  if (pos == 0)
-                    setState(() {
-                      isPanelClosed = true;
-                    });
-                  else if (pos == 1) {
-                    setState(() {
-                      isPanelClosed = false;
-                    });
-                    if (scrollController.offset > 0)
-                      scrollController.animateTo(2,
-                          duration: Duration(milliseconds: 350),
-                          curve: Curves.fastOutSlowIn);
-                  }
+                onPanelClosed: () => setState(() {
+                  isPanelClosed = true;
+                }),
+                onPanelOpened: () {
+                  setState(() {
+                    isPanelClosed = false;
+                  });
+                  if (scrollController.offset > 0)
+                    scrollController.animateTo(2,
+                        duration: Duration(milliseconds: 350),
+                        curve: Curves.fastOutSlowIn);
                 },
               ),
               _PositionedPanel(
