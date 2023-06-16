@@ -30,9 +30,9 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   late BitmapDescriptor pinLocationIcon;
   late GoogleMapController mapController;
   Set<Marker> _markers = {};
-  late List<MarkerEntity> markers;
+  List<MarkerEntity> markers = [];
   late LatLng initialMapCenter;
-  late MarkerEntity selectedMarker = markers[0];
+  MarkerEntity? selectedMarker;
   String googleAPiKey = Environment.googleMapApiKey;
   final GlobalKey<ScaffoldState> key = GlobalKey();
 
@@ -50,8 +50,8 @@ class _MapScreenState extends ConsumerState<MapScreen> {
 
   @override
   void initState() {
+    getUserData();
     ref.read(userCurrentLocationProvider.notifier).getUserCurrentLocation();
-    markers = ref.read(markersListProvider);
     initialMapCenter = ref.read(initialCenterProvider);
     rootBundle.loadString('assets/map_style.json').then((string) {
       mapStyle = string;
@@ -59,13 +59,17 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     setCustomMapPin();
     scrollController = ScrollController();
     panelController = PanelController();
-    getUserData();
     super.initState();
   }
 
   void getUserData() async {
     userData = await ref.read(userDataProvider);
+    markers = await ref.read(markersListProvider);
     setState(() {});
+  }
+
+  Future<MarkerEntity> getMarkerImages(MarkerEntity marker) async {
+    return await ref.watch(markerRepositoryProvider).getMarkerImages(marker);
   }
 
   void setCustomMapPin() async {
@@ -79,7 +83,8 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   }
 
 // Create Map with markers
-  Future<void> onMapCreated(GoogleMapController controller) async {
+  void onMapCreated(GoogleMapController controller) async {
+    markers = await ref.read(markersListProvider);
     mapController = controller;
     controller.setMapStyle(mapStyle);
     for (final marker in markers) {
@@ -92,13 +97,15 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               panelController.open();
             },
           ),
-          onTap: () {
-            if (selectedMarker == marker)
+          onTap: () async {
+            if (selectedMarker == marker) {
+              selectedMarker = await getMarkerImages(marker);
               panelController.open();
-            else
-              setState(() {
-                selectedMarker = marker;
-              });
+            } else {
+              selectedMarker = marker;
+              selectedMarker = await getMarkerImages(marker);
+              setState(() {});
+            }
           },
           icon: pinLocationIcon));
     }
@@ -205,8 +212,8 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             children: [
               SlidingUpPanel(
                 body: Container(
-                  margin: EdgeInsets.only(
-                      bottom: size.height - size.height * 0.8),
+                  margin:
+                      EdgeInsets.only(bottom: size.height - size.height * 0.85),
                   color: Colors.white,
                   child: GoogleMap(
                     myLocationEnabled: true,

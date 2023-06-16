@@ -7,7 +7,7 @@ import 'package:sliding_up_panel2/sliding_up_panel2.dart';
 class Footer extends StatefulWidget {
   final bool isPanelClosed;
   final Future<void> Function(MarkerEntity) getPolyline;
-  final MarkerEntity selectedMarker;
+  final MarkerEntity? selectedMarker;
   final PanelController panelController;
   const Footer(
       {super.key,
@@ -30,64 +30,73 @@ class _FooterState extends State<Footer> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          AnimatedContainer(
-            curve: Curves.easeInOutExpo,
-            duration: Duration(milliseconds: 200),
-            width: widget.isPanelClosed
-                ? MediaQuery.of(context).size.width / 2
-                : 0,
-            child: CustomButton(
-                width: 0.4,
-                buttonText: "Cómo llegar",
-                onTap: () async {
-                  await widget.getPolyline(widget.selectedMarker);
-                }),
-          ),
-          AnimatedContainer(
-            curve: Curves.easeInOutExpo,
-            duration: Duration(milliseconds: 200),
-            width: widget.isPanelClosed ? 0 : MediaQuery.of(context).size.width,
-            child: CustomButton(
-              width: 0.6,
-              buttonText: 'Activar AR',
-              onTap: () {
-                //TODO: show dialog or Unity logic
-                showGeneralDialog(
-                    context: context,
-                    barrierDismissible: true,
-                    barrierLabel: '',
-                    pageBuilder: (context, a1, a2) {
-                      return Container();
+          (widget.selectedMarker != null)
+              ? AnimatedContainer(
+                  curve: Curves.easeInOutExpo,
+                  duration: Duration(milliseconds: 200),
+                  width: widget.isPanelClosed
+                      ? MediaQuery.of(context).size.width / 2
+                      : 0,
+                  child: CustomButton(
+                      width: 0.4,
+                      buttonText: "Cómo llegar",
+                      onTap: () async {
+                        await widget.getPolyline(widget.selectedMarker!);
+                      }),
+                )
+              : SizedBox(),
+          (widget.selectedMarker != null)
+              ? AnimatedContainer(
+                  curve: Curves.easeInOutExpo,
+                  duration: Duration(milliseconds: 200),
+                  width: widget.isPanelClosed
+                      ? 0
+                      : MediaQuery.of(context).size.width,
+                  child: CustomButton(
+                    width: 0.6,
+                    buttonText: 'Activar AR',
+                    onTap: () {
+                      //TODO: show dialog or Unity logic
+                      showGeneralDialog(
+                          context: context,
+                          barrierDismissible: true,
+                          barrierLabel: '',
+                          pageBuilder: (context, a1, a2) {
+                            return Container();
+                          },
+                          transitionBuilder: (ctx, a1, a2, child) {
+                            return Transform.scale(
+                              scale: Curves.easeInOut.transform(a1.value),
+                              child: NotNearDialog(
+                                  marker: widget.selectedMarker!,
+                                  onPressed: () async {
+                                    Navigator.of(context).pop();
+                                    widget.panelController.close();
+                                    await widget
+                                        .getPolyline(widget.selectedMarker!);
+                                  }),
+                            );
+                          });
                     },
-                    transitionBuilder: (ctx, a1, a2, child) {
-                      return Transform.scale(
-                        scale: Curves.easeInOut.transform(a1.value),
-                        child: NotNearDialog(
-                            marker: widget.selectedMarker,
-                            onPressed: () async {
-                              Navigator.of(context).pop();
-                              widget.panelController.close();
-                              await widget.getPolyline(widget.selectedMarker);
-                            }),
-                      );
-                    });
-              },
-            ),
-          ),
-          AnimatedContainer(
-            curve: Curves.easeInOutExpo,
-            duration: Duration(milliseconds: 200),
-            width: widget.isPanelClosed
-                ? MediaQuery.of(context).size.width / 2
-                : 0,
-            child: CustomButton(
-              width: 0.4,
-              buttonText: 'Ver más',
-              onTap: () {
-                widget.panelController.open();
-              },
-            ),
-          ),
+                  ),
+                )
+              : SizedBox(),
+          (widget.selectedMarker != null)
+              ? AnimatedContainer(
+                  curve: Curves.easeInOutExpo,
+                  duration: Duration(milliseconds: 200),
+                  width: widget.isPanelClosed
+                      ? MediaQuery.of(context).size.width / 2
+                      : 0,
+                  child: CustomButton(
+                    width: 0.4,
+                    buttonText: 'Ver más',
+                    onTap: () {
+                      widget.panelController.open();
+                    },
+                  ),
+                )
+              : SizedBox(),
         ],
       ),
     );

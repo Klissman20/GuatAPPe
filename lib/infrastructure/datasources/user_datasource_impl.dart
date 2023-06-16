@@ -18,6 +18,7 @@ class UserDataSourceImpl extends UsersDataSource {
       final user = UserModel.fromJson(userData!);
       return UserMapper.userFirebaseToEntity(user);
     }
+    //TODO: firebase exception
     throw UnimplementedError();
   }
 

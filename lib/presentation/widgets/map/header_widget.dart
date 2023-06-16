@@ -3,7 +3,7 @@ import 'package:guatappe/domain/entities/marker_entity.dart';
 import 'package:sliding_up_panel2/sliding_up_panel2.dart';
 
 class Header extends StatelessWidget {
-  final MarkerEntity selectedMarker;
+  final MarkerEntity? selectedMarker;
   const Header({super.key, required this.selectedMarker});
 
   @override
@@ -28,7 +28,9 @@ class Header extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(top: 8),
               child: Text(
-                selectedMarker.name,
+                (selectedMarker != null)
+                    ? selectedMarker!.name
+                    : 'Seleccione un lugar',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     fontSize: 22,
