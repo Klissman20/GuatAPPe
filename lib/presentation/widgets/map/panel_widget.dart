@@ -38,8 +38,10 @@ class Panel extends StatelessWidget {
                                 ? SizedBox()
                                 : SizedBox(
                                     height: 250,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
+                                    child: Center(
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                      ),
                                     ),
                                   )
                         : SizedBox(),
