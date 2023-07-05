@@ -8,6 +8,46 @@ import 'package:guatappe/presentation/widgets/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:guatappe/config/theme/app_theme.dart';
 
+String inputName = '';
+String inputLastname = '';
+String inputEmail = '';
+String inputGender = '';
+int inputPhone = 0;
+String inputCountry = '';
+String inputPassword = '';
+
+String? errorTextName(String text) {
+  if (text.isEmpty) {
+    return 'Can\'t be empty';
+  }
+  // return null if the text is valid
+  return null;
+}
+
+String? errorTextEmail(String text) {
+  if (text.isEmpty) return 'Can\'t be empty';
+
+  if (!text.contains('@') && !text.contains('.')) return 'Enter a valid email';
+  // return null if the text is valid
+  return null;
+}
+
+String? errorTextPhone(String text) {
+  if (text.isEmpty) return 'Can\'t be empty';
+
+  if (text.length < 10) return 'Enter a valid phone';
+  // return null if the text is valid
+  return null;
+}
+
+String? errorTextPassword(String text) {
+  if (text.isEmpty) return 'Can\'t be empty';
+
+  if (text.length < 8) return 'Too short';
+  // return null if the text is valid
+  return null;
+}
+
 class RegisterScreen extends StatelessWidget {
   static const String name = 'register_screen';
 
@@ -39,14 +79,6 @@ class _RegisterViewState extends ConsumerState<_RegisterView> {
   TextEditingController controllerPhone = TextEditingController();
   TextEditingController controllerCountry = TextEditingController();
   TextEditingController controllerPassword = TextEditingController();
-
-  String inputName = '';
-  String inputLastname = '';
-  String inputEmail = '';
-  String inputGender = '';
-  int inputPhone = 0;
-  String inputCountry = '';
-  String inputPassword = '';
 
   @override
   void dispose() {
@@ -85,10 +117,13 @@ class _RegisterViewState extends ConsumerState<_RegisterView> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 35.0, vertical: 10),
             child: Column(children: [
-              TextFieldBox(
+              CustomTextField(
+                errorText: errorTextName(controllerName.value.text),
+                typeText: TextInputType.name,
+                prefixIcon: Icons.person_3_outlined,
                 controller: controllerName,
-                typeText: 'Name',
-                onChanged: (value) {
+                labelText: 'Name',
+                onChanged: () {
                   setState(() {
                     inputName = controllerName.text;
                   });
@@ -98,25 +133,13 @@ class _RegisterViewState extends ConsumerState<_RegisterView> {
                 height: 20,
               ),
               // Probando validacion
-              TextField(
-                style: TextStyle(color: Colors.white),
+              CustomTextField(
+                errorText: errorTextName(controllerLastName.value.text),
+                typeText: TextInputType.name,
+                prefixIcon: Icons.person_4_outlined,
                 controller: controllerLastName,
-                decoration: InputDecoration(
-                    labelText: 'LastName',
-                    errorStyle: TextStyle(
-                        fontSize: 13.5,
-                        fontWeight: FontWeight.bold,
-                        color: Color.fromARGB(246, 243, 193, 11)),
-                    errorText: controllerLastName.value.text.isEmpty
-                        ? 'No puede estar vacio' //Mensaje error
-                        : null,
-                    border: OutlineInputBorder(
-                        borderSide: BorderSide(width: 3),
-                        borderRadius: BorderRadius.circular(20)),
-                    fillColor: Colors.black.withOpacity(0.1),
-                    filled: true,
-                    labelStyle: TextStyle(color: Colors.white)),
-                onChanged: (value) {
+                labelText: 'LastName',
+                onChanged: () {
                   setState(() {
                     inputLastname = controllerLastName.text;
                   });
@@ -125,10 +148,13 @@ class _RegisterViewState extends ConsumerState<_RegisterView> {
               const SizedBox(
                 height: 20,
               ),
-              TextFieldBox(
+              CustomTextField(
+                errorText: errorTextEmail(controllerEmail.value.text),
+                typeText: TextInputType.emailAddress,
+                prefixIcon: Icons.email_outlined,
                 controller: controllerEmail,
-                typeText: 'Email',
-                onChanged: (value) {
+                labelText: 'Email',
+                onChanged: () {
                   setState(() {
                     inputEmail = controllerEmail.text;
                   });
@@ -137,10 +163,13 @@ class _RegisterViewState extends ConsumerState<_RegisterView> {
               const SizedBox(
                 height: 20,
               ),
-              TextFieldBox(
+              CustomTextField(
+                errorText: errorTextName(controllerGender.value.text),
+                typeText: TextInputType.name,
+                prefixIcon: Icons.person_search_outlined,
                 controller: controllerGender,
-                typeText: 'Gender',
-                onChanged: (value) {
+                labelText: 'Gender',
+                onChanged: () {
                   setState(() {
                     inputGender = controllerGender.text;
                   });
@@ -149,22 +178,33 @@ class _RegisterViewState extends ConsumerState<_RegisterView> {
               const SizedBox(
                 height: 20,
               ),
-              TextFieldBox(
+              CustomTextField(
+                errorText: errorTextPhone(controllerPhone.value.text),
+                typeText: TextInputType.phone,
+                prefixIcon: Icons.phone_enabled_outlined,
                 controller: controllerPhone,
-                typeText: 'Phone Number',
-                onChanged: (value) {
+                labelText: 'Phone',
+                onChanged: () {
                   setState(() {
-                    inputPhone = int.parse(controllerPhone.text);
+                    if (controllerPhone.text.isNotEmpty) {
+                      inputPhone = int.parse(controllerPhone.text);
+                    }
+                    inputPhone = 0;
                   });
                 },
               ),
               const SizedBox(
                 height: 20,
               ),
-              TextFieldBox(
+              CustomTextField(
+                errorText: controllerCountry.value.text.isEmpty
+                    ? "Can't be empty"
+                    : null,
+                typeText: TextInputType.name,
+                prefixIcon: Icons.location_city_outlined,
                 controller: controllerCountry,
-                typeText: 'Country',
-                onChanged: (value) {
+                labelText: 'Country',
+                onChanged: () {
                   setState(() {
                     inputCountry = controllerCountry.text;
                   });
@@ -173,7 +213,9 @@ class _RegisterViewState extends ConsumerState<_RegisterView> {
               const SizedBox(
                 height: 20,
               ),
+
               PasswordFieldBox(
+                errorText: errorTextPassword(controllerPassword.value.text),
                 controller: controllerPassword,
                 onChanged: (value) {
                   setState(() {
@@ -236,7 +278,7 @@ class _RegisterButton extends ConsumerWidget {
         style: ButtonStyle(
             shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                 RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.0),
+                    borderRadius: BorderRadius.circular(10.0),
                     side: const BorderSide(color: Colors.transparent)))),
         child: Text(
           'Registrarse',
@@ -272,7 +314,7 @@ class _RegisterButton extends ConsumerWidget {
                       ],
                     ));
           }
-          await showDialog(
+          return await showDialog(
             context: context,
             builder: (ctx) => AlertDialog(
               title: const Text('Ups!'),

@@ -57,14 +57,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           height: 150,
                         ),
                       ),
-                      TextFieldBox(
+                      CustomTextField(
                         controller: controllerUser,
-                        typeText: 'Email',
-                        onChanged: (value) {
+                        typeText: TextInputType.name,
+                        onChanged: () {
                           setState(() {
                             inputUser = controllerUser.text;
                           });
                         },
+                        labelText: 'Email',
+                        prefixIcon: Icons.person_outlined,
                       ),
                       const SizedBox(
                         height: 20,
@@ -150,7 +152,7 @@ class _LogInButton extends ConsumerWidget {
           style: ButtonStyle(
               shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                   RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
+                      borderRadius: BorderRadius.circular(5.0),
                       side: const BorderSide(color: Colors.transparent)))),
           child: Text(
             'Iniciar sesión',
