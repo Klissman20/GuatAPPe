@@ -51,5 +51,20 @@
     <string>Needed to access location always when the app is open.</string>
     <key>NSLocationWhenInUseUsageDescription</key>
     <string>Needed to access location when the app is open and run in background.</string>
+	<!-- Google Sign-in Section -->
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<!-- Copied from GoogleService-Info.plist key REVERSED_CLIENT_ID -->
+				<string>com.googleusercontent.apps.30362615042-kag0pr7qkflf4ejn2t0olmmass02hiqv</string>
+			</array>
+		</dict>
+	</array>
+	<!-- End of the Google Sign-in Section -->
+
 </dict>
 </plist>
