@@ -1,4 +1,4 @@
-package com.example.guatappe
+package com.tailorsdev.guatappe
 
 import io.flutter.embedding.android.FlutterActivity
 

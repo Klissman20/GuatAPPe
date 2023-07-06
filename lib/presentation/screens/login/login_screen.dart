@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:guatappe/infrastructure/models/user_model.dart';
 import 'package:guatappe/presentation/providers/auth_repository_provider.dart';
 import 'package:guatappe/presentation/providers/user_repository_provider.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import '../../../config/theme/app_theme.dart';
 import '../../widgets/login/password_field_box.dart';
 import '../../widgets/login/text_field_box.dart';
@@ -103,6 +104,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         height: 30,
                       ),
                       _GoogleButton(),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      _AppleButton(),
                     ],
                   ),
                 ),
@@ -188,9 +193,12 @@ class _GoogleButton extends ConsumerWidget {
             SizedBox(
               width: 20,
             ),
-            Image.asset(
-              'assets/google-logo.png',
-              fit: BoxFit.fitHeight,
+            Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: Image.asset(
+                'assets/google-logo.png',
+                fit: BoxFit.fitHeight,
+              ),
             )
           ],
         ),
@@ -208,6 +216,65 @@ class _GoogleButton extends ConsumerWidget {
               country: '',
               phone: 0);
           await ref.read(userRepositoryProvider).createUser(newUser);
+          if (response['state'] == 'ok') return context.goNamed(MapScreen.name);
+        },
+      ),
+    );
+  }
+}
+
+class _AppleButton extends ConsumerWidget {
+  const _AppleButton();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final TextStyle textStyleBtn = TextStyle(
+        color: AppTheme.colorApp, fontSize: 18, fontWeight: FontWeight.bold);
+
+    return SizedBox(
+      height: 40,
+      child: ElevatedButton(
+        style: ButtonStyle(
+            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5.0),
+                    side: const BorderSide(color: Colors.transparent)))),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'Acceder con Apple',
+              style: textStyleBtn,
+            ),
+            SizedBox(
+              width: 20,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: Image.asset(
+                'assets/apple-logo.png',
+                fit: BoxFit.fitHeight,
+              ),
+            )
+          ],
+        ),
+        onPressed: () async {
+          FocusScope.of(context).unfocus();
+          final response =
+              await ref.read(authRepositoryProvider).continueWithApple();
+
+          final AuthorizationCredentialAppleID appleUser = response['user'];
+          if (appleUser.givenName != null) {
+            final newUser = UserModel(
+                id: response['uid'],
+                name: appleUser.givenName!,
+                lastName: appleUser.familyName!,
+                email: appleUser.email!,
+                gender: '',
+                country: '',
+                phone: 0);
+            await ref.read(userRepositoryProvider).createUser(newUser);
+          }
           if (response['state'] == 'ok') return context.goNamed(MapScreen.name);
         },
       ),

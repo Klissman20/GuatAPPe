@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:guatappe/config/helpers/firebase_options.dart';
 import 'package:guatappe/domain/datasources/auth_firebase_datasource.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 class AuthFirebaseDataSourceImpl extends AuthFirebaseDataSource {
   final FirebaseAuth _firebaseAuth;
@@ -79,5 +80,36 @@ class AuthFirebaseDataSourceImpl extends AuthFirebaseDataSource {
     } on FirebaseAuthException catch (e) {
       return {'user': null, 'state': 'failed', 'error': e};
     }
+  }
+
+  @override
+  Future<Map<String, dynamic>> continueWithApple() async {
+    final redirectURL =
+        'https://northern-jasper-racer.glitch.me/callbacks/sign_in_with_apple';
+    // final redirectURL = 'https://guatappe-com.firebaseapp.com/__/auth/handler';
+
+    final appleCredential = await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName
+        ],
+        webAuthenticationOptions: WebAuthenticationOptions(
+            clientId: 'com.tailorsdev.guatappe0',
+            redirectUri: Uri.parse(redirectURL)));
+
+    final oAuthProvider = OAuthProvider('apple.com');
+    final credential = oAuthProvider.credential(
+      idToken: appleCredential.identityToken!,
+      accessToken: appleCredential.authorizationCode,
+    );
+    final response = await _firebaseAuth.signInWithCredential(credential);
+    final _user = response.user;
+    assert(_user?.isAnonymous == false);
+    assert(await _user?.getIdToken() != null);
+    return {
+      'user': (appleCredential),
+      'state': 'ok',
+      'uid': (response.user!.uid)
+    };
   }
 }

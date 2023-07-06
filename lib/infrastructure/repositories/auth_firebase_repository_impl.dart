@@ -27,4 +27,9 @@ class AuthFirebaseRepositoryImpl extends AuthFirebaseRepository {
   Future<Map<String, dynamic>> continueWithGoogle() {
     return datasource.continueWithGoogle();
   }
+
+  @override
+  Future<Map<String, dynamic>> continueWithApple() {
+    return datasource.continueWithApple();
+  }
 }
