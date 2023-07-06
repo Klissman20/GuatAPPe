@@ -390,6 +390,7 @@ class _Drawer extends ConsumerWidget {
         ListTile(
           leading: Icon(Icons.account_box),
           title: Text('Mi Cuenta'),
+          onTap: () => context.goNamed(RegisterScreen.name),
         ),
         ListTile(
           leading: Icon(Icons.favorite),
