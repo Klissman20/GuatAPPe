@@ -5,8 +5,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:guatappe/domain/entities/marker_entity.dart';
 import 'package:guatappe/domain/entities/user_entity.dart';
+import 'package:guatappe/presentation/providers/initial_loading_provider.dart';
 import 'package:guatappe/presentation/providers/providers.dart';
 import 'package:guatappe/presentation/screens/screens.dart';
+import 'package:guatappe/presentation/widgets/full_screen_loader.dart';
 import 'package:guatappe/presentation/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
@@ -51,7 +53,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   @override
   void initState() {
     getUserData();
-    ref.read(userCurrentLocationProvider.notifier).getUserCurrentLocation();
     initialMapCenter = ref.read(initialCenterProvider);
     rootBundle.loadString('assets/map_style.json').then((string) {
       mapStyle = string;
@@ -59,6 +60,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     setCustomMapPin();
     scrollController = ScrollController();
     panelController = PanelController();
+    ref.read(userCurrentLocationProvider.notifier).getUserCurrentLocation();
     super.initState();
   }
 
@@ -205,6 +207,11 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
+
+    final initialLoading = ref.watch(initialLoadingProvider);
+
+    if (initialLoading) return const FullScreenLoader();
+
     return Scaffold(
       body: SafeArea(
         child: Material(

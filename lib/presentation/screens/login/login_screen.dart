@@ -80,8 +80,20 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           });
                         },
                       ),
-                      const SizedBox(
-                        height: 20,
+                      Align(
+                        alignment: Alignment.bottomRight,
+                        child: TextButton(
+                            onPressed: () {
+                              context.pushNamed(PasswordScreen.name);
+                            },
+                            child: Text(
+                              '¿Olvidó su contraseña?',
+                              maxLines: 1,
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 13),
+                            )),
                       ),
                       _LogInButton(
                         textStyleBtn: textStyleBtn,
@@ -94,11 +106,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           },
                           child: Text(
                             '¿No tiene una cuenta? - Registrese',
-                            maxLines: 2,
+                            maxLines: 1,
                             style: TextStyle(
                                 color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18),
+                                fontWeight: FontWeight.w900,
+                                fontSize: 17),
                           )),
                       SizedBox(
                         height: 30,

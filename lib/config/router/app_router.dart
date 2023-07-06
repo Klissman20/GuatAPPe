@@ -13,6 +13,11 @@ final appRouter = GoRouter(initialLocation: '/', routes: [
       pageBuilder: (context, state) =>
           transitionPage(state, const LoginScreen())),
   GoRoute(
+      name: PasswordScreen.name,
+      path: '/password',
+      pageBuilder: (context, state) =>
+          transitionPage(state, const PasswordScreen())),
+  GoRoute(
       name: RegisterScreen.name,
       path: '/register',
       pageBuilder: (context, state) =>
