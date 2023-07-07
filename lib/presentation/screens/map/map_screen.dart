@@ -213,64 +213,68 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     if (initialLoading) return const FullScreenLoader();
 
     return Scaffold(
-      body: SafeArea(
-        child: Material(
-          child: Stack(
-            children: [
-              SlidingUpPanel(
-                body: Container(
-                  margin:
-                      EdgeInsets.only(bottom: size.height - size.height * 0.85),
-                  color: Colors.white,
-                  child: GoogleMap(
-                    myLocationEnabled: true,
-                    onMapCreated: onMapCreated,
-                    markers: _markers,
-                    polylines: Set.of(polylines.values),
-                    mapToolbarEnabled: false,
-                    initialCameraPosition:
-                        CameraPosition(target: initialMapCenter, zoom: 13),
+      body: Container(
+        color: AppTheme.colorApp,
+        child: SafeArea(
+          child: Material(
+            color: AppTheme.colorApp,
+            child: Stack(
+              children: [
+                SlidingUpPanel(
+                  body: Container(
+                    margin: EdgeInsets.only(
+                        bottom: size.height - size.height * 0.85),
+                    color: Colors.white,
+                    child: GoogleMap(
+                      myLocationEnabled: true,
+                      onMapCreated: onMapCreated,
+                      markers: _markers,
+                      polylines: Set.of(polylines.values),
+                      mapToolbarEnabled: false,
+                      initialCameraPosition:
+                          CameraPosition(target: initialMapCenter, zoom: 13),
+                    ),
                   ),
-                ),
-                controller: panelController,
-                scrollController: scrollController,
-                header: Header(selectedMarker: selectedMarker),
-                backdropEnabled: true,
-                parallaxEnabled: true,
-                parallaxOffset: 0.45,
-                backdropOpacity: 0.4,
-                panelBuilder: () => Panel(
-                  selectedMarker: selectedMarker,
+                  controller: panelController,
                   scrollController: scrollController,
-                  isPanelClosed: isPanelClosed,
-                  panelController: panelController,
-                ),
-                borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(18.0),
-                    topRight: Radius.circular(18.0)),
-                maxHeight: size.height * 0.84,
-                footer: Footer(
-                    isPanelClosed: isPanelClosed,
-                    getPolyline: getPolyline,
+                  header: Header(selectedMarker: selectedMarker),
+                  backdropEnabled: true,
+                  parallaxEnabled: true,
+                  parallaxOffset: 0.45,
+                  backdropOpacity: 0.4,
+                  panelBuilder: () => Panel(
                     selectedMarker: selectedMarker,
-                    panelController: panelController),
-                onPanelClosed: () => setState(() {
-                  isPanelClosed = true;
-                }),
-                onPanelOpened: () {
-                  setState(() {
-                    isPanelClosed = false;
-                  });
-                  if (scrollController.offset > 0)
-                    scrollController.animateTo(2,
-                        duration: Duration(milliseconds: 350),
-                        curve: Curves.fastOutSlowIn);
-                },
-              ),
-              _PositionedPanel(
-                  isPanelClosed: isPanelClosed,
-                  panelController: panelController)
-            ],
+                    scrollController: scrollController,
+                    isPanelClosed: isPanelClosed,
+                    panelController: panelController,
+                  ),
+                  borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(18.0),
+                      topRight: Radius.circular(18.0)),
+                  maxHeight: size.height * 0.84,
+                  footer: Footer(
+                      isPanelClosed: isPanelClosed,
+                      getPolyline: getPolyline,
+                      selectedMarker: selectedMarker,
+                      panelController: panelController),
+                  onPanelClosed: () => setState(() {
+                    isPanelClosed = true;
+                  }),
+                  onPanelOpened: () {
+                    setState(() {
+                      isPanelClosed = false;
+                    });
+                    if (scrollController.offset > 0)
+                      scrollController.animateTo(2,
+                          duration: Duration(milliseconds: 350),
+                          curve: Curves.fastOutSlowIn);
+                  },
+                ),
+                _PositionedPanel(
+                    isPanelClosed: isPanelClosed,
+                    panelController: panelController)
+              ],
+            ),
           ),
         ),
       ),
@@ -361,6 +365,7 @@ class _Drawer extends ConsumerWidget {
         child: ListView(
       children: [
         UserAccountsDrawerHeader(
+          decoration: BoxDecoration(color: AppTheme.colorApp),
           accountName: Text('${userData?.name} ${userData?.lastName}'),
           accountEmail: Text(
             '${userData?.email}',
@@ -397,7 +402,19 @@ class _Drawer extends ConsumerWidget {
         ListTile(
           leading: Icon(Icons.account_box),
           title: Text('Mi Cuenta'),
-          onTap: () => context.goNamed(RegisterScreen.name),
+          onTap: () => showGeneralDialog(
+              context: context,
+              barrierDismissible: true,
+              barrierLabel: '',
+              pageBuilder: (BuildContext context, a1, a2) {
+                return Container();
+              },
+              transitionBuilder: (context, a1, a2, child) {
+                return FadeTransition(
+                  opacity: a1,
+                  child: RegisterScreen(user: userData!),
+                );
+              }),
         ),
         ListTile(
           leading: Icon(Icons.favorite),

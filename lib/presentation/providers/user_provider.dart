@@ -5,7 +5,7 @@ import 'package:guatappe/presentation/providers/providers.dart';
 final userDataProvider = StateProvider((ref) async {
   final authUser = ref.watch(authStateProvider).value;
   if (authUser == null) await authUser?.reload();
-  final UserEntity userFirestore =
+  final UserEntity? userFirestore =
       await ref.watch(userRepositoryProvider).getUserById(authUser?.uid);
   return userFirestore;
 });

@@ -10,16 +10,19 @@ class UserDataSourceImpl extends UsersDataSource {
   UserDataSourceImpl(this.firebaseFirestore);
 
   @override
-  Future<UserEntity> getUserById(String? id) async {
-    final userFirestore =
-        await firebaseFirestore.collection('users').doc(id).get();
-    if (userFirestore.exists) {
-      final userData = userFirestore.data();
-      final user = UserModel.fromJson(userData!);
-      return UserMapper.userFirebaseToEntity(user);
+  Future<UserEntity?> getUserById(String? id) async {
+    try {
+      final userFirestore =
+          await firebaseFirestore.collection('users').doc(id).get();
+      if (userFirestore.exists) {
+        final userData = userFirestore.data();
+        final user = UserModel.fromJson(userData!);
+        return UserMapper.userFirebaseToEntity(user);
+      }
+    } catch (e) {
+      print(e);
     }
-    //TODO: firebase exception
-    throw UnimplementedError();
+    return null;
   }
 
   @override

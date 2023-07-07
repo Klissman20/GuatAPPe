@@ -9,7 +9,7 @@ class UserRepositoryImpl extends UsersRepository {
   UserRepositoryImpl(this.dataSource);
 
   @override
-  Future<UserEntity> getUserById(String? id) {
+  Future<UserEntity?> getUserById(String? id) {
     return dataSource.getUserById(id ?? '');
   }
 

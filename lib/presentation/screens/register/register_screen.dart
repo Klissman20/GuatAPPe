@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:guatappe/domain/entities/user_entity.dart';
 import 'package:guatappe/infrastructure/models/user_model.dart';
 import 'package:guatappe/presentation/providers/auth_repository_provider.dart';
 import 'package:guatappe/presentation/providers/user_repository_provider.dart';
@@ -27,7 +28,7 @@ String? errorTextName(String text) {
 String? errorTextEmail(String text) {
   if (text.isEmpty) return 'Can\'t be empty';
 
-  if (!text.contains('@') && !text.contains('.')) return 'Enter a valid email';
+  if (!text.contains('@') || !text.contains('.')) return 'Enter a valid email';
   // return null if the text is valid
   return null;
 }
@@ -50,22 +51,24 @@ String? errorTextPassword(String text) {
 
 class RegisterScreen extends StatelessWidget {
   static const String name = 'register_screen';
+  final UserEntity? user;
 
-  const RegisterScreen({super.key});
+  const RegisterScreen({super.key, this.user});
 
   @override
   Widget build(BuildContext context) {
     final colorApp = AppTheme.colorApp;
 
     return Scaffold(
-      body: _RegisterView(),
+      body: _RegisterView(user),
       backgroundColor: colorApp,
     );
   }
 }
 
 class _RegisterView extends ConsumerStatefulWidget {
-  const _RegisterView();
+  final UserEntity? user;
+  _RegisterView(this.user);
 
   @override
   _RegisterViewState createState() => _RegisterViewState();
@@ -90,6 +93,18 @@ class _RegisterViewState extends ConsumerState<_RegisterView> {
     controllerPhone.dispose();
     controllerCountry.dispose();
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    controllerName.text = widget.user?.name ?? '';
+    controllerLastName.text = widget.user?.lastName ?? '';
+    controllerEmail.text = widget.user?.email ?? '';
+    inputEmail = controllerEmail.text;
+    controllerGender.text = widget.user?.gender ?? '';
+    controllerPhone.text = widget.user?.phone.toString() ?? '';
+    controllerCountry.text = widget.user?.country ?? '';
+    super.initState();
   }
 
   @override
@@ -149,6 +164,7 @@ class _RegisterViewState extends ConsumerState<_RegisterView> {
                 height: 20,
               ),
               CustomTextField(
+                readOnly: widget.user?.id != null,
                 errorText: errorTextEmail(controllerEmail.value.text),
                 typeText: TextInputType.emailAddress,
                 prefixIcon: Icons.email_outlined,
@@ -186,10 +202,9 @@ class _RegisterViewState extends ConsumerState<_RegisterView> {
                 labelText: 'Phone',
                 onChanged: () {
                   setState(() {
-                    if (controllerPhone.text.isNotEmpty) {
-                      inputPhone = int.parse(controllerPhone.text);
-                    }
-                    inputPhone = 0;
+                    inputPhone = controllerPhone.text.isNotEmpty
+                        ? int.parse(controllerPhone.text)
+                        : 0;
                   });
                 },
               ),
@@ -214,21 +229,25 @@ class _RegisterViewState extends ConsumerState<_RegisterView> {
                 height: 20,
               ),
 
-              PasswordFieldBox(
-                errorText: errorTextPassword(controllerPassword.value.text),
-                controller: controllerPassword,
-                onChanged: (value) {
-                  setState(() {
-                    inputPassword = controllerPassword.text;
-                  });
-                },
-              ),
+              widget.user?.id == null
+                  ? PasswordFieldBox(
+                      errorText:
+                          errorTextPassword(controllerPassword.value.text),
+                      controller: controllerPassword,
+                      onChanged: (value) {
+                        setState(() {
+                          inputPassword = controllerPassword.text;
+                        });
+                      },
+                    )
+                  : SizedBox(),
               const SizedBox(
                 height: 20,
               ),
               _RegisterButton(
                 textStyleBtn: textStyleBtn,
                 name: inputName,
+                id: widget.user?.id,
                 lastName: inputLastname,
                 gender: inputGender,
                 phone: inputPhone,
@@ -248,6 +267,7 @@ class _RegisterViewState extends ConsumerState<_RegisterView> {
 }
 
 class _RegisterButton extends ConsumerWidget {
+  final String? id;
   final String name;
   final String lastName;
   final String email;
@@ -256,8 +276,9 @@ class _RegisterButton extends ConsumerWidget {
   final int phone;
   final String password;
 
-  const _RegisterButton({
+  _RegisterButton({
     required this.textStyleBtn,
+    this.id,
     required this.name,
     required this.password,
     required this.lastName,
@@ -281,14 +302,16 @@ class _RegisterButton extends ConsumerWidget {
                     borderRadius: BorderRadius.circular(10.0),
                     side: const BorderSide(color: Colors.transparent)))),
         child: Text(
-          'Registrarse',
+          id == null ? 'Registrarse' : 'Actualizar',
           style: textStyleBtn,
         ),
         onPressed: () async {
           FocusScope.of(context).unfocus();
-          final response = await ref
-              .read(authRepositoryProvider)
-              .signUp(email: email, password: password);
+          final response = id == null
+              ? await ref
+                  .read(authRepositoryProvider)
+                  .signUp(email: email, password: password)
+              : {'uid': id, 'state': 'ok'};
           if (response['state'] == 'ok') {
             final newUser = UserModel(
                 id: response['uid'],
@@ -303,14 +326,16 @@ class _RegisterButton extends ConsumerWidget {
                 context: context,
                 builder: (ctx) => AlertDialog(
                       title: const Text('Grandioso!'),
-                      content: Text('El usuario ha sido creado con exito'),
+                      content: Text(
+                          'El usuario ha sido ${id == null ? 'creado' : 'guardado'} con exito'),
                       actions: [
                         TextButton(
                             onPressed: () {
                               Navigator.of(ctx).pop();
-                              ctx.goNamed(LoginScreen.name);
+                              if (id == null) ctx.goNamed(LoginScreen.name);
                             },
-                            child: const Text("Iniciar Sesion"))
+                            child:
+                                Text(id == null ? "Iniciar Sesion" : "Aceptar"))
                       ],
                     ));
           }

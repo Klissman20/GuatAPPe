@@ -7,6 +7,7 @@ class CustomTextField extends StatefulWidget {
     required this.onChanged,
     required this.prefixIcon,
     required this.typeText,
+    this.readOnly,
     this.errorText,
   });
 
@@ -16,6 +17,7 @@ class CustomTextField extends StatefulWidget {
   final IconData prefixIcon;
   final TextInputType typeText;
   final String? errorText;
+  final bool? readOnly;
 
   @override
   State<CustomTextField> createState() => _CustomTextFieldState();
@@ -25,6 +27,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
   @override
   Widget build(BuildContext context) {
     return TextField(
+        readOnly: widget.readOnly ?? false,
         keyboardType: widget.typeText,
         cursorColor: Colors.white70,
         style: TextStyle(color: Colors.white),

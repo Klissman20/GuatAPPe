@@ -84,7 +84,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         alignment: Alignment.bottomRight,
                         child: TextButton(
                             onPressed: () {
-                              context.pushNamed(PasswordScreen.name);
+                              showDialog(
+                                  context: context,
+                                  builder: (ctx) => PasswordScreen());
                             },
                             child: Text(
                               '¿Olvidó su contraseña?',
@@ -112,14 +114,23 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                 fontWeight: FontWeight.w900,
                                 fontSize: 17),
                           )),
-                      SizedBox(
-                        height: 30,
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 10.0),
+                        child: Text(
+                          'Accede con:',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600),
+                        ),
                       ),
-                      _GoogleButton(),
-                      SizedBox(
-                        height: 30,
+                      Row(
+                        children: [
+                          _GoogleButton(),
+                          SizedBox(width: 20),
+                          _AppleButton(),
+                        ],
                       ),
-                      _AppleButton(),
                     ],
                   ),
                 ),
@@ -199,7 +210,7 @@ class _GoogleButton extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              'Acceder con Google',
+              'Google',
               style: textStyleBtn,
             ),
             SizedBox(
@@ -255,7 +266,7 @@ class _AppleButton extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              'Acceder con Apple',
+              'Apple',
               style: textStyleBtn,
             ),
             SizedBox(
