@@ -1,3 +1,5 @@
+export 'package:guatappe/presentation/screens/ar/ar_view.dart';
+
 export 'package:guatappe/presentation/screens/login/password_screen.dart';
 
 export 'login/login_screen.dart';

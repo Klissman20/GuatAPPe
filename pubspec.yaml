@@ -19,6 +19,7 @@ dependencies:
   flutter_dotenv: ^5.0.2
   flutter_polyline_points: ^1.0.0
   flutter_riverpod: ^2.3.6
+  flutter_unity_widget: ^2022.2.0
   geolocator: ^9.0.2
   go_router: ^7.0.0
   google_maps_flutter: ^2.2.6
