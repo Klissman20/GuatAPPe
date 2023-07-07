@@ -279,7 +279,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
         ),
       ),
       endDrawer: _Drawer(userData),
-      floatingActionButtonLocation: FloatingActionButtonLocation.miniCenterTop,
+      floatingActionButtonLocation: FloatingActionButtonLocation.miniEndTop,
       floatingActionButton: _MenuFloatingButton(),
     );
   }
@@ -290,14 +290,22 @@ class _MenuFloatingButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FloatingActionButton(
-      heroTag: 'fab2',
-      backgroundColor: AppTheme.colorApp,
-      onPressed: () {
-        Scaffold.of(context).openEndDrawer();
-      },
-      mini: true,
-      child: Icon(Icons.menu, color: Colors.white),
+    return Container(
+      margin: EdgeInsets.only(right: 45, top: 6),
+      child: FloatingActionButton(
+        heroTag: 'fab2',
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(7)),
+        ),
+        backgroundColor: AppTheme.colorApp,
+        onPressed: () {
+          Scaffold.of(context).openEndDrawer();
+        },
+        elevation: 1,
+        mini: true,
+        
+        child: Icon(Icons.menu, color: Colors.white, size: 24,),
+      ),
     );
   }
 }
