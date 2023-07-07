@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:guatappe/infrastructure/models/marker_model.dart';
+import 'package:guatappe/domain/entities/marker_entity.dart';
 
 class DetailsScreen extends StatelessWidget {
   static const String name = 'details_screen';
-  final MarkerModel marker;
+  final MarkerEntity marker;
   final bool visibility;
   final Function(bool value)? onChange;
 
@@ -76,7 +76,7 @@ class DetailsScreen extends StatelessWidget {
                       borderRadius: BorderRadius.only(
                           bottomLeft: Radius.circular(5),
                           bottomRight: Radius.circular(5)),
-                      child: marker.image?[0] ?? Image.asset('name'),
+                      child: marker.imageList?[0] ?? Image.asset('name'),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(10.0),

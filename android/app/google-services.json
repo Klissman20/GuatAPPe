@@ -48,6 +48,50 @@
           ]
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:30362615042:android:a5ca853371cabcba7b961b",
+        "android_client_info": {
+          "package_name": "com.tailorsdev.guatappe"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "30362615042-99lhu5hu7c0p6t2m1qouq31qs6sghiqs.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tailorsdev.guatappe",
+            "certificate_hash": "a8705a28809960c194729a7b922da53c7ba7747f"
+          }
+        },
+        {
+          "client_id": "30362615042-f8f7t11s3k5f6hsl8v6n9cmpi2c3qhhg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDaCPAb2VrCXcGoLj2RceqEhQrHgxNnm8o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "30362615042-f8f7t11s3k5f6hsl8v6n9cmpi2c3qhhg.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "30362615042-kag0pr7qkflf4ejn2t0olmmass02hiqv.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.guatappe"
+              }
+            }
+          ]
+        }
+      }
     }
   ],
   "configuration_version": "1"

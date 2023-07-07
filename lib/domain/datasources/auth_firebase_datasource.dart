@@ -8,4 +8,6 @@ abstract class AuthFirebaseDataSource {
   Future<void> signOut();
 
   Future<Map<String, dynamic>> continueWithGoogle();
+
+  Future<Map<String, dynamic>> continueWithApple();
 }

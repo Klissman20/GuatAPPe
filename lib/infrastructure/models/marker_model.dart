@@ -1,30 +1,23 @@
-import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-
 class MarkerModel {
-  final int id;
+  final String id;
   final String name;
   final String description;
-  List<Image>? image;
-  final String latitude;
-  final Future<BitmapDescriptor>? iconMarker;
-  final String longitude;
+  final double latitude;
+  final double longitude;
 
   MarkerModel(
       {required this.id,
       required this.latitude,
-      this.iconMarker,
       required this.longitude,
       required this.name,
-      required this.description,
-      this.image});
+      required this.description});
 
   factory MarkerModel.fromJson(Map<String, dynamic> json) => MarkerModel(
-        id: json['id'],
+        id: json['id'] ?? '',
         name: json['name'],
-        description: json['decription'],
+        description: json['description'],
         latitude: json['latitude'],
-        longitude: json['logitude'],
+        longitude: json['longitude'],
       );
 
   Map<String, dynamic> toJson() => {

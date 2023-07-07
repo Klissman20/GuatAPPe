@@ -2,7 +2,7 @@ import 'package:guatappe/domain/entities/user_entity.dart';
 import 'package:guatappe/infrastructure/models/user_model.dart';
 
 abstract class UsersDataSource {
-  Future<UserEntity> getUserById(String id);
+  Future<UserEntity?> getUserById(String id);
 
   Future<void> createUser(UserModel newUser);
 }

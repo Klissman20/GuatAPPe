@@ -5,8 +5,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:guatappe/domain/entities/marker_entity.dart';
 import 'package:guatappe/domain/entities/user_entity.dart';
+import 'package:guatappe/presentation/providers/initial_loading_provider.dart';
 import 'package:guatappe/presentation/providers/providers.dart';
 import 'package:guatappe/presentation/screens/screens.dart';
+import 'package:guatappe/presentation/widgets/full_screen_loader.dart';
 import 'package:guatappe/presentation/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
@@ -30,9 +32,9 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   late BitmapDescriptor pinLocationIcon;
   late GoogleMapController mapController;
   Set<Marker> _markers = {};
-  late List<MarkerEntity> markers;
+  List<MarkerEntity> markers = [];
   late LatLng initialMapCenter;
-  late MarkerEntity selectedMarker = markers[0];
+  MarkerEntity? selectedMarker;
   String googleAPiKey = Environment.googleMapApiKey;
   final GlobalKey<ScaffoldState> key = GlobalKey();
 
@@ -50,8 +52,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
 
   @override
   void initState() {
-    ref.read(userCurrentLocationProvider.notifier).getUserCurrentLocation();
-    markers = ref.read(markersListProvider);
+    getUserData();
     initialMapCenter = ref.read(initialCenterProvider);
     rootBundle.loadString('assets/map_style.json').then((string) {
       mapStyle = string;
@@ -59,13 +60,18 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     setCustomMapPin();
     scrollController = ScrollController();
     panelController = PanelController();
-    getUserData();
+    ref.read(userCurrentLocationProvider.notifier).getUserCurrentLocation();
     super.initState();
   }
 
   void getUserData() async {
     userData = await ref.read(userDataProvider);
+    markers = await ref.read(markersListProvider);
     setState(() {});
+  }
+
+  Future<MarkerEntity> getMarkerImages(MarkerEntity marker) async {
+    return await ref.watch(markerRepositoryProvider).getMarkerImages(marker);
   }
 
   void setCustomMapPin() async {
@@ -79,7 +85,8 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   }
 
 // Create Map with markers
-  Future<void> onMapCreated(GoogleMapController controller) async {
+  void onMapCreated(GoogleMapController controller) async {
+    markers = await ref.read(markersListProvider);
     mapController = controller;
     controller.setMapStyle(mapStyle);
     for (final marker in markers) {
@@ -92,13 +99,15 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               panelController.open();
             },
           ),
-          onTap: () {
-            if (selectedMarker == marker)
+          onTap: () async {
+            if (selectedMarker == marker) {
+              selectedMarker = await getMarkerImages(marker);
               panelController.open();
-            else
-              setState(() {
-                selectedMarker = marker;
-              });
+            } else {
+              selectedMarker = marker;
+              selectedMarker = await getMarkerImages(marker);
+              setState(() {});
+            }
           },
           icon: pinLocationIcon));
     }
@@ -198,65 +207,74 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
+
+    final initialLoading = ref.watch(initialLoadingProvider);
+
+    if (initialLoading) return const FullScreenLoader();
+
     return Scaffold(
-      body: SafeArea(
-        child: Material(
-          child: Stack(
-            children: [
-              SlidingUpPanel(
-                body: Container(
-                  margin: EdgeInsets.only(
-                      bottom: size.height - size.height * 0.8),
-                  color: Colors.white,
-                  child: GoogleMap(
-                    myLocationEnabled: true,
-                    onMapCreated: onMapCreated,
-                    markers: _markers,
-                    polylines: Set.of(polylines.values),
-                    mapToolbarEnabled: false,
-                    initialCameraPosition:
-                        CameraPosition(target: initialMapCenter, zoom: 13),
+      body: Container(
+        color: AppTheme.colorApp,
+        child: SafeArea(
+          child: Material(
+            color: AppTheme.colorApp,
+            child: Stack(
+              children: [
+                SlidingUpPanel(
+                  body: Container(
+                    margin: EdgeInsets.only(
+                        bottom: size.height - size.height * 0.85),
+                    color: Colors.white,
+                    child: GoogleMap(
+                      myLocationEnabled: true,
+                      onMapCreated: onMapCreated,
+                      markers: _markers,
+                      polylines: Set.of(polylines.values),
+                      mapToolbarEnabled: false,
+                      initialCameraPosition:
+                          CameraPosition(target: initialMapCenter, zoom: 13),
+                    ),
                   ),
-                ),
-                controller: panelController,
-                scrollController: scrollController,
-                header: Header(selectedMarker: selectedMarker),
-                backdropEnabled: true,
-                parallaxEnabled: true,
-                parallaxOffset: 0.45,
-                backdropOpacity: 0.4,
-                panelBuilder: () => Panel(
-                  selectedMarker: selectedMarker,
+                  controller: panelController,
                   scrollController: scrollController,
-                  isPanelClosed: isPanelClosed,
-                  panelController: panelController,
-                ),
-                borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(18.0),
-                    topRight: Radius.circular(18.0)),
-                maxHeight: size.height * 0.84,
-                footer: Footer(
-                    isPanelClosed: isPanelClosed,
-                    getPolyline: getPolyline,
+                  header: Header(selectedMarker: selectedMarker),
+                  backdropEnabled: true,
+                  parallaxEnabled: true,
+                  parallaxOffset: 0.45,
+                  backdropOpacity: 0.4,
+                  panelBuilder: () => Panel(
                     selectedMarker: selectedMarker,
-                    panelController: panelController),
-                onPanelClosed: () => setState(() {
-                  isPanelClosed = true;
-                }),
-                onPanelOpened: () {
-                  setState(() {
-                    isPanelClosed = false;
-                  });
-                  if (scrollController.offset > 0)
-                    scrollController.animateTo(2,
-                        duration: Duration(milliseconds: 350),
-                        curve: Curves.fastOutSlowIn);
-                },
-              ),
-              _PositionedPanel(
-                  isPanelClosed: isPanelClosed,
-                  panelController: panelController)
-            ],
+                    scrollController: scrollController,
+                    isPanelClosed: isPanelClosed,
+                    panelController: panelController,
+                  ),
+                  borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(18.0),
+                      topRight: Radius.circular(18.0)),
+                  maxHeight: size.height * 0.84,
+                  footer: Footer(
+                      isPanelClosed: isPanelClosed,
+                      getPolyline: getPolyline,
+                      selectedMarker: selectedMarker,
+                      panelController: panelController),
+                  onPanelClosed: () => setState(() {
+                    isPanelClosed = true;
+                  }),
+                  onPanelOpened: () {
+                    setState(() {
+                      isPanelClosed = false;
+                    });
+                    if (scrollController.offset > 0)
+                      scrollController.animateTo(2,
+                          duration: Duration(milliseconds: 350),
+                          curve: Curves.fastOutSlowIn);
+                  },
+                ),
+                _PositionedPanel(
+                    isPanelClosed: isPanelClosed,
+                    panelController: panelController)
+              ],
+            ),
           ),
         ),
       ),
@@ -347,6 +365,7 @@ class _Drawer extends ConsumerWidget {
         child: ListView(
       children: [
         UserAccountsDrawerHeader(
+          decoration: BoxDecoration(color: AppTheme.colorApp),
           accountName: Text('${userData?.name} ${userData?.lastName}'),
           accountEmail: Text(
             '${userData?.email}',
@@ -383,6 +402,19 @@ class _Drawer extends ConsumerWidget {
         ListTile(
           leading: Icon(Icons.account_box),
           title: Text('Mi Cuenta'),
+          onTap: () => showGeneralDialog(
+              context: context,
+              barrierDismissible: true,
+              barrierLabel: '',
+              pageBuilder: (BuildContext context, a1, a2) {
+                return Container();
+              },
+              transitionBuilder: (context, a1, a2, child) {
+                return FadeTransition(
+                  opacity: a1,
+                  child: RegisterScreen(user: userData!),
+                );
+              }),
         ),
         ListTile(
           leading: Icon(Icons.favorite),

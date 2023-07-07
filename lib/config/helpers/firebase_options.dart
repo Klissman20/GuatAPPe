@@ -51,7 +51,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyDaCPAb2VrCXcGoLj2RceqEhQrHgxNnm8o',
-    appId: '1:30362615042:android:9e5357248bdf2da17b961b',
+    appId: '1:30362615042:android:a5ca853371cabcba7b961b',
     messagingSenderId: '30362615042',
     projectId: 'guatappe-com',
     storageBucket: 'guatappe-com.appspot.com',

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:guatappe/domain/entities/user_entity.dart';
 import 'package:guatappe/infrastructure/models/user_model.dart';
 import 'package:guatappe/presentation/providers/auth_repository_provider.dart';
 import 'package:guatappe/presentation/providers/user_repository_provider.dart';
@@ -8,24 +9,66 @@ import 'package:guatappe/presentation/widgets/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:guatappe/config/theme/app_theme.dart';
 
+String inputName = '';
+String inputLastname = '';
+String inputEmail = '';
+String inputGender = '';
+int inputPhone = 0;
+String inputCountry = '';
+String inputPassword = '';
+
+String? errorTextName(String text) {
+  if (text.isEmpty) {
+    return 'Can\'t be empty';
+  }
+  // return null if the text is valid
+  return null;
+}
+
+String? errorTextEmail(String text) {
+  if (text.isEmpty) return 'Can\'t be empty';
+
+  if (!text.contains('@') || !text.contains('.')) return 'Enter a valid email';
+  // return null if the text is valid
+  return null;
+}
+
+String? errorTextPhone(String text) {
+  if (text.isEmpty) return 'Can\'t be empty';
+
+  if (text.length < 10) return 'Enter a valid phone';
+  // return null if the text is valid
+  return null;
+}
+
+String? errorTextPassword(String text) {
+  if (text.isEmpty) return 'Can\'t be empty';
+
+  if (text.length < 8) return 'Too short';
+  // return null if the text is valid
+  return null;
+}
+
 class RegisterScreen extends StatelessWidget {
   static const String name = 'register_screen';
+  final UserEntity? user;
 
-  const RegisterScreen({super.key});
+  const RegisterScreen({super.key, this.user});
 
   @override
   Widget build(BuildContext context) {
     final colorApp = AppTheme.colorApp;
 
     return Scaffold(
-      body: _RegisterView(),
+      body: _RegisterView(user),
       backgroundColor: colorApp,
     );
   }
 }
 
 class _RegisterView extends ConsumerStatefulWidget {
-  const _RegisterView();
+  final UserEntity? user;
+  _RegisterView(this.user);
 
   @override
   _RegisterViewState createState() => _RegisterViewState();
@@ -40,14 +83,6 @@ class _RegisterViewState extends ConsumerState<_RegisterView> {
   TextEditingController controllerCountry = TextEditingController();
   TextEditingController controllerPassword = TextEditingController();
 
-  String inputName = '';
-  String inputLastname = '';
-  String inputEmail = '';
-  String inputGender = '';
-  int inputPhone = 0;
-  String inputCountry = '';
-  String inputPassword = '';
-
   @override
   void dispose() {
     // Clean up the controller when the widget is disposed.
@@ -58,6 +93,18 @@ class _RegisterViewState extends ConsumerState<_RegisterView> {
     controllerPhone.dispose();
     controllerCountry.dispose();
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    controllerName.text = widget.user?.name ?? '';
+    controllerLastName.text = widget.user?.lastName ?? '';
+    controllerEmail.text = widget.user?.email ?? '';
+    inputEmail = controllerEmail.text;
+    controllerGender.text = widget.user?.gender ?? '';
+    controllerPhone.text = widget.user?.phone.toString() ?? '';
+    controllerCountry.text = widget.user?.country ?? '';
+    super.initState();
   }
 
   @override
@@ -85,10 +132,13 @@ class _RegisterViewState extends ConsumerState<_RegisterView> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 35.0, vertical: 10),
             child: Column(children: [
-              TextFieldBox(
+              CustomTextField(
+                errorText: errorTextName(controllerName.value.text),
+                typeText: TextInputType.name,
+                prefixIcon: Icons.person_3_outlined,
                 controller: controllerName,
-                typeText: 'Name',
-                onChanged: (value) {
+                labelText: 'Name',
+                onChanged: () {
                   setState(() {
                     inputName = controllerName.text;
                   });
@@ -98,25 +148,13 @@ class _RegisterViewState extends ConsumerState<_RegisterView> {
                 height: 20,
               ),
               // Probando validacion
-              TextField(
-                style: TextStyle(color: Colors.white),
+              CustomTextField(
+                errorText: errorTextName(controllerLastName.value.text),
+                typeText: TextInputType.name,
+                prefixIcon: Icons.person_4_outlined,
                 controller: controllerLastName,
-                decoration: InputDecoration(
-                    labelText: 'LastName',
-                    errorStyle: TextStyle(
-                        fontSize: 13.5,
-                        fontWeight: FontWeight.bold,
-                        color: Color.fromARGB(246, 243, 193, 11)),
-                    errorText: controllerLastName.value.text.isEmpty
-                        ? 'No puede estar vacio' //Mensaje error
-                        : null,
-                    border: OutlineInputBorder(
-                        borderSide: BorderSide(width: 3),
-                        borderRadius: BorderRadius.circular(20)),
-                    fillColor: Colors.black.withOpacity(0.1),
-                    filled: true,
-                    labelStyle: TextStyle(color: Colors.white)),
-                onChanged: (value) {
+                labelText: 'LastName',
+                onChanged: () {
                   setState(() {
                     inputLastname = controllerLastName.text;
                   });
@@ -125,10 +163,14 @@ class _RegisterViewState extends ConsumerState<_RegisterView> {
               const SizedBox(
                 height: 20,
               ),
-              TextFieldBox(
+              CustomTextField(
+                readOnly: widget.user?.id != null,
+                errorText: errorTextEmail(controllerEmail.value.text),
+                typeText: TextInputType.emailAddress,
+                prefixIcon: Icons.email_outlined,
                 controller: controllerEmail,
-                typeText: 'Email',
-                onChanged: (value) {
+                labelText: 'Email',
+                onChanged: () {
                   setState(() {
                     inputEmail = controllerEmail.text;
                   });
@@ -137,10 +179,13 @@ class _RegisterViewState extends ConsumerState<_RegisterView> {
               const SizedBox(
                 height: 20,
               ),
-              TextFieldBox(
+              CustomTextField(
+                errorText: errorTextName(controllerGender.value.text),
+                typeText: TextInputType.name,
+                prefixIcon: Icons.person_search_outlined,
                 controller: controllerGender,
-                typeText: 'Gender',
-                onChanged: (value) {
+                labelText: 'Gender',
+                onChanged: () {
                   setState(() {
                     inputGender = controllerGender.text;
                   });
@@ -149,22 +194,32 @@ class _RegisterViewState extends ConsumerState<_RegisterView> {
               const SizedBox(
                 height: 20,
               ),
-              TextFieldBox(
+              CustomTextField(
+                errorText: errorTextPhone(controllerPhone.value.text),
+                typeText: TextInputType.phone,
+                prefixIcon: Icons.phone_enabled_outlined,
                 controller: controllerPhone,
-                typeText: 'Phone Number',
-                onChanged: (value) {
+                labelText: 'Phone',
+                onChanged: () {
                   setState(() {
-                    inputPhone = int.parse(controllerPhone.text);
+                    inputPhone = controllerPhone.text.isNotEmpty
+                        ? int.parse(controllerPhone.text)
+                        : 0;
                   });
                 },
               ),
               const SizedBox(
                 height: 20,
               ),
-              TextFieldBox(
+              CustomTextField(
+                errorText: controllerCountry.value.text.isEmpty
+                    ? "Can't be empty"
+                    : null,
+                typeText: TextInputType.name,
+                prefixIcon: Icons.location_city_outlined,
                 controller: controllerCountry,
-                typeText: 'Country',
-                onChanged: (value) {
+                labelText: 'Country',
+                onChanged: () {
                   setState(() {
                     inputCountry = controllerCountry.text;
                   });
@@ -173,20 +228,26 @@ class _RegisterViewState extends ConsumerState<_RegisterView> {
               const SizedBox(
                 height: 20,
               ),
-              PasswordFieldBox(
-                controller: controllerPassword,
-                onChanged: (value) {
-                  setState(() {
-                    inputPassword = controllerPassword.text;
-                  });
-                },
-              ),
+
+              widget.user?.id == null
+                  ? PasswordFieldBox(
+                      errorText:
+                          errorTextPassword(controllerPassword.value.text),
+                      controller: controllerPassword,
+                      onChanged: (value) {
+                        setState(() {
+                          inputPassword = controllerPassword.text;
+                        });
+                      },
+                    )
+                  : SizedBox(),
               const SizedBox(
                 height: 20,
               ),
               _RegisterButton(
                 textStyleBtn: textStyleBtn,
                 name: inputName,
+                id: widget.user?.id,
                 lastName: inputLastname,
                 gender: inputGender,
                 phone: inputPhone,
@@ -206,6 +267,7 @@ class _RegisterViewState extends ConsumerState<_RegisterView> {
 }
 
 class _RegisterButton extends ConsumerWidget {
+  final String? id;
   final String name;
   final String lastName;
   final String email;
@@ -214,8 +276,9 @@ class _RegisterButton extends ConsumerWidget {
   final int phone;
   final String password;
 
-  const _RegisterButton({
+  _RegisterButton({
     required this.textStyleBtn,
+    this.id,
     required this.name,
     required this.password,
     required this.lastName,
@@ -236,17 +299,19 @@ class _RegisterButton extends ConsumerWidget {
         style: ButtonStyle(
             shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                 RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.0),
+                    borderRadius: BorderRadius.circular(10.0),
                     side: const BorderSide(color: Colors.transparent)))),
         child: Text(
-          'Registrarse',
+          id == null ? 'Registrarse' : 'Actualizar',
           style: textStyleBtn,
         ),
         onPressed: () async {
           FocusScope.of(context).unfocus();
-          final response = await ref
-              .read(authRepositoryProvider)
-              .signUp(email: email, password: password);
+          final response = id == null
+              ? await ref
+                  .read(authRepositoryProvider)
+                  .signUp(email: email, password: password)
+              : {'uid': id, 'state': 'ok'};
           if (response['state'] == 'ok') {
             final newUser = UserModel(
                 id: response['uid'],
@@ -261,18 +326,20 @@ class _RegisterButton extends ConsumerWidget {
                 context: context,
                 builder: (ctx) => AlertDialog(
                       title: const Text('Grandioso!'),
-                      content: Text('El usuario ha sido creado con exito'),
+                      content: Text(
+                          'El usuario ha sido ${id == null ? 'creado' : 'guardado'} con exito'),
                       actions: [
                         TextButton(
                             onPressed: () {
                               Navigator.of(ctx).pop();
-                              ctx.goNamed(LoginScreen.name);
+                              if (id == null) ctx.goNamed(LoginScreen.name);
                             },
-                            child: const Text("Iniciar Sesion"))
+                            child:
+                                Text(id == null ? "Iniciar Sesion" : "Aceptar"))
                       ],
                     ));
           }
-          await showDialog(
+          return await showDialog(
             context: context,
             builder: (ctx) => AlertDialog(
               title: const Text('Ups!'),

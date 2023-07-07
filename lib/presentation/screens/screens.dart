@@ -1,3 +1,5 @@
+export 'package:guatappe/presentation/screens/login/password_screen.dart';
+
 export 'login/login_screen.dart';
 export 'splash/splash_screen_animated.dart';
 export 'splash/splash_screen_native.dart';

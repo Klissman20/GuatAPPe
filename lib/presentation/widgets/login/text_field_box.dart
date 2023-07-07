@@ -1,46 +1,63 @@
 import 'package:flutter/material.dart';
 
-class TextFieldBox extends StatelessWidget {
+class CustomTextField extends StatefulWidget {
+  const CustomTextField({
+    required this.controller,
+    required this.labelText,
+    required this.onChanged,
+    required this.prefixIcon,
+    required this.typeText,
+    this.readOnly,
+    this.errorText,
+  });
+
   final TextEditingController controller;
-  final String typeText;
-  final void Function(String)? onChanged;
-  const TextFieldBox(
-      {super.key,
-      required this.typeText,
-      required this.controller,
-      this.onChanged});
+  final String labelText;
+  final void Function() onChanged;
+  final IconData prefixIcon;
+  final TextInputType typeText;
+  final String? errorText;
+  final bool? readOnly;
 
   @override
+  State<CustomTextField> createState() => _CustomTextFieldState();
+}
+
+class _CustomTextFieldState extends State<CustomTextField> {
+  @override
   Widget build(BuildContext context) {
-    const TextStyle textStyle = TextStyle(color: Colors.white54, fontSize: 18);
-
-    final outlineInputBorder = OutlineInputBorder(
-        borderSide: const BorderSide(color: Colors.white54),
-        borderRadius: BorderRadius.circular(10));
-
-    final inputDecoration = InputDecoration(
-        labelText: typeText,
-        labelStyle: TextStyle(color: Colors.white54),
-        hintText: 'Enter your $typeText',
-        hintStyle: textStyle,
-        enabledBorder: outlineInputBorder,
-        focusedBorder: outlineInputBorder,
-        focusedErrorBorder: InputBorder.none);
-
-    return TextFormField(
-      controller: controller,
-      autocorrect: false,
-      enableSuggestions: false,
-      cursorColor: Colors.white54,
-      keyboardAppearance: Brightness.light,
-      keyboardType: (typeText == 'Email')
-          ? TextInputType.emailAddress
-          : (typeText == 'Phone Number')
-              ? TextInputType.number
-              : TextInputType.text,
-      style: textStyle,
-      decoration: inputDecoration,
-      onChanged: onChanged,
-    );
+    return TextField(
+        readOnly: widget.readOnly ?? false,
+        keyboardType: widget.typeText,
+        cursorColor: Colors.white70,
+        style: TextStyle(color: Colors.white),
+        controller: widget.controller,
+        decoration: InputDecoration(
+            prefixIcon: Icon(
+              widget.prefixIcon,
+              color: Colors.white70,
+            ),
+            focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.white70, width: 1.0)),
+            disabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.white70, width: 1.0)),
+            enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.white70, width: 1.0)),
+            border: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.white70, width: 1.0)),
+            label: Text(widget.labelText),
+            labelStyle: TextStyle(color: Colors.white70),
+            focusedErrorBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.white70, width: 1.0)),
+            errorStyle: TextStyle(
+                color: Colors.yellow,
+                fontWeight: FontWeight.bold,
+                fontSize: 13),
+            errorBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.yellow, width: 1.0)),
+            errorText: widget.errorText),
+        onChanged: (_) {
+          widget.onChanged();
+        });
   }
 }
