@@ -66,6 +66,14 @@
           }
         },
         {
+          "client_id": "30362615042-e94us3pk6vk4amobgr3pjalhgf4mnakn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tailorsdev.guatappe",
+            "certificate_hash": "7e2b17754d15e51f7d43205af4835345d0d05d63"
+          }
+        },
+        {
           "client_id": "30362615042-f8f7t11s3k5f6hsl8v6n9cmpi2c3qhhg.apps.googleusercontent.com",
           "client_type": 3
         }
