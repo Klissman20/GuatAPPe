@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:guatappe/domain/entities/marker_entity.dart';
+import 'package:guatappe/presentation/screens/screens.dart';
 import 'package:guatappe/presentation/widgets/custom_button.dart';
 import 'package:guatappe/presentation/widgets/not_near_dialog.dart';
 import 'package:sliding_up_panel2/sliding_up_panel2.dart';
@@ -57,26 +59,27 @@ class _FooterState extends State<Footer> {
                     buttonText: 'Activar AR',
                     onTap: () {
                       //TODO: show dialog or Unity logic
-                      showGeneralDialog(
-                          context: context,
-                          barrierDismissible: true,
-                          barrierLabel: '',
-                          pageBuilder: (context, a1, a2) {
-                            return Container();
-                          },
-                          transitionBuilder: (ctx, a1, a2, child) {
-                            return Transform.scale(
-                              scale: Curves.easeInOut.transform(a1.value),
-                              child: NotNearDialog(
-                                  marker: widget.selectedMarker!,
-                                  onPressed: () async {
-                                    Navigator.of(context).pop();
-                                    widget.panelController.close();
-                                    await widget
-                                        .getPolyline(widget.selectedMarker!);
-                                  }),
-                            );
-                          });
+                      context.pushNamed(ARScreen.name);
+                      // showGeneralDialog(
+                      //     context: context,
+                      //     barrierDismissible: true,
+                      //     barrierLabel: '',
+                      //     pageBuilder: (context, a1, a2) {
+                      //       return Container();
+                      //     },
+                      //     transitionBuilder: (ctx, a1, a2, child) {
+                      //       return Transform.scale(
+                      //         scale: Curves.easeInOut.transform(a1.value),
+                      //         child: NotNearDialog(
+                      //             marker: widget.selectedMarker!,
+                      //             onPressed: () async {
+                      //               Navigator.of(context).pop();
+                      //               widget.panelController.close();
+                      //               await widget
+                      //                   .getPolyline(widget.selectedMarker!);
+                      //             }),
+                      //       );
+                      //     });
                     },
                   ),
                 )

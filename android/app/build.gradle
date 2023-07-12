@@ -29,6 +29,12 @@ apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
+    sourceSets {
+         main {
+             java.srcDirs += 'src/main/java'
+             kotlin.srcDirs += 'src/main/kotlin'
+        }
+    }
     compileSdkVersion flutter.compileSdkVersion
     ndkVersion flutter.ndkVersion
 
@@ -50,7 +56,10 @@ android {
         applicationId "com.tailorsdev.guatappe"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
-        minSdkVersion 24
+        ndk{
+            abiFilters "armeabi-v7a", "arm64-v8a"
+        }
+        minSdkVersion 28
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
@@ -62,6 +71,11 @@ android {
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig signingConfigs.debug
         }
+        debug {
+            // TODO: Add your own signing config for the release build.
+            // Signing with the debug keys for now, so `flutter run --release` works.
+            signingConfig signingConfigs.debug
+        }
     }
 }
 
@@ -69,6 +83,16 @@ flutter {
     source '../..'
 }
 
+
 dependencies {
+    implementation project(':unityLibrary')
+    implementation(name: 'unity-classes', ext:'jar')
+    // implementation(name: 'ARPresto', ext:'aar')
+    // implementation(name: 'unityandroidpermissions', ext:'aar')
+    // implementation(name: 'UnityARCore', ext:'aar')
+    // implementation(name: 'arcore_client', ext:'aar')
+    // implementation(name: 'libarpresto_api', ext:'so')
+    // implementation(name: 'libUnityARCore', ext:'so')
+    // implementation fileTree(dir: project(':unityLibrary').getProjectDir().toString() + ('\\libs'), include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
